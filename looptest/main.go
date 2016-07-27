@@ -2,10 +2,23 @@ package main
 
 import "fmt"
 
-func main() {
+func scenic() {
 	var i int
-	for i < 10 {
-		i = i+1
+	i = 1
+	for i < 11 {
 		fmt.Println("scenic", i)
+		i = i+1
 	}
+}
+
+func succinct() {
+	for i := 1 ; i < 11 ; i++ {
+		fmt.Println("succinct", i)
+	}
+}
+
+func main() {
+	scenic()
+	fmt.Println()
+	succinct()
 }
