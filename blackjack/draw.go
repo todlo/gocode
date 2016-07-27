@@ -7,6 +7,25 @@ import (
 	"strings"
 )
 
+func askYn(q string) bool {
+	var a string
+	fmt.Printf(q)
+	_, err := fmt.Scanln(&a)
+	strings.ToLower(a)
+	fmt.Println("DEBUG:", a)
+	switch {
+	case strings.HasPrefix("yes", a):
+		return true
+	case strings.HasPrefix("no", a):
+		return false
+	case fmt.Sprint(err) == "unexpected newline":
+		return true
+	default:
+		fmt.Println("Just a y or n will do.")
+		return askYn(q)
+	}
+}
+
 func draw() (string, int) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	c := map[int]string{
@@ -30,7 +49,7 @@ func draw() (string, int) {
 }
 
 func main() {
-	hand := [2]string{}
+	hand := make([]string, 2)
 
 	card1, score1 := draw()
 	if score1 > 10 { score1 = 10 }
@@ -46,9 +65,26 @@ func main() {
 	}
 	hand[1] = card2
 
+	t := score1+score2
 	fmt.Println("Hand:")
 	for i := range hand {
 		fmt.Print(hand[i])
 	}
-	fmt.Println("Score:", score1+score2)
+	fmt.Println("Score:", t)
+
+	for t < 21 {
+		if askYn("Would you like to hit? [Y/n]: ") {
+			newcard, value := draw()
+			t = t+value
+			hand = append(hand, newcard)
+			fmt.Printf("Dealer deals a %s.\nNew score: %d\n", newcard, t)
+		} else {
+			break
+		}
+	}
+	fmt.Println("Final score:", t)
+	fmt.Println("Final hand:")
+	for i := range hand {
+		fmt.Print(hand[i])
+	}
 }
