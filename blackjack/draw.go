@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"time"
 	"math/rand"
+	"strings"
 )
 
-func draw() {
+func draw() (string, int) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	c := map[int]string{
 		1:"Ace",
@@ -23,11 +24,16 @@ func draw() {
 		12:"Queen",
 		13:"King",
 	}
-	card := r.Intn(14-1) + 1
+	num := r.Intn(14-1) + 1
 	suit := [4]string{"Spades", "Diamonds", "Clubs", "Hearts"}
-	fmt.Println(c[card], "of", suit[r.Intn(4)])
+	return fmt.Sprintln(c[num], "of", suit[r.Intn(4)]), num
 }
 
 func main() {
-	draw()
+	card, score := draw()
+	if score > 10 { score = 10 }
+	if strings.Contains(card, "Ace") {
+		score = score + 10
+	}
+	fmt.Println(card,"Score:", score)
 }
