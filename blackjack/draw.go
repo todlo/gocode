@@ -30,10 +30,25 @@ func draw() (string, int) {
 }
 
 func main() {
-	card, score := draw()
-	if score > 10 { score = 10 }
-	if strings.Contains(card, "Ace") {
-		score = score + 10
+	hand := [2]string{}
+
+	card1, score1 := draw()
+	if score1 > 10 { score1 = 10 }
+	if strings.Contains(card1, "Ace") {
+		score1 = score1 + 10
 	}
-	fmt.Println(card,"Score:", score)
+	hand[0] = card1
+
+	card2, score2 := draw()
+	if score2 > 10 { score2 = 10 }
+	if strings.Contains(card2, "Ace") && score1 < 11 {
+		score2 = score2 + 10
+	}
+	hand[1] = card2
+
+	fmt.Println("Hand:")
+	for i := range hand {
+		fmt.Print(hand[i])
+	}
+	fmt.Println("Score:", score1+score2)
 }
