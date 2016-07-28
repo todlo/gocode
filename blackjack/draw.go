@@ -77,10 +77,17 @@ func main() {
 	for t < 21 {
 		if askYn("Would you like to hit? [Y/n]: ") {
 			newcard, value := draw()
-			if strings.Contains(newcard, "Ace") && t + 11 <= 21 {
-				t = t+11
+			if value > 10 { value = 10 }
+			switch {
+				case strings.Contains(newcard, "Ace") && t + 11 <= 21: 
+					highace = true
+					t = t+11
+				case highace == true && t > 21: 
+					highace = false
+					t = t-10
+				default:
+					t = t+value
 			}
-			t = t+value
 			hand = append(hand, newcard)
 			fmt.Printf("Dealer deals a %s.\nNew score: %d\n", newcard, t)
 		} else {
@@ -88,17 +95,21 @@ func main() {
 		}
 		switch {
 		case highace == true && t > 21:
+			fmt.Println("High Ace becomes Low Ace...")
 			highace = false
 			t = t-10
+			fmt.Println("New score:", t)
 		case t == 21:
 			fmt.Println("BLACKJACK!! :D")
 		case t > 21:
 			fmt.Println("BUSTED! :(")
+		case t < 21 && len(hand) == 5:
+			fmt.Println("5-card hand... YOU WIN!! :D")
 		}
 	}
-	fmt.Println("Final score:", t)
 	fmt.Println("Final hand:")
 	for i := range hand {
 		fmt.Println(hand[i])
 	}
+	fmt.Println("Final score:", t)
 }
