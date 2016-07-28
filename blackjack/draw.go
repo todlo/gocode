@@ -84,10 +84,10 @@ func main() {
 			newcard, value := draw()
 			if value > 10 { value = 10 }
 			switch {
-				case strings.Contains(newcard, "Ace") && t + 11 <= 21: 
+				case strings.Contains(newcard, "Ace") && t + 11 <= 21:
 					highace = true
 					t += 11
-				case highace == true && t > 21: 
+				case highace == true && t > 21:
 					highace = false
 					t -= 10
 				default:
