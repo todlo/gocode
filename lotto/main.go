@@ -38,7 +38,7 @@ func makeRandoms() ([]int,  int, bool) {
 	}
 
 	if z != 10 || pbCheck(x, pb) == false {
-		return x, pb, true
+		return x, pb, false
 	}
 	return x, pb, true
 }
