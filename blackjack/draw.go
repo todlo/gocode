@@ -1,3 +1,8 @@
+// blackjack draws from an "infinite" stack // TODO: Add option to pull from single or 9-stack deck.
+// Deals initial 2 cards, then asks user if they'd like to hit (default is yes) until
+// user wins (score == 21; blackjack), busts (score > 21; bust), gets 5 cards, or chooses
+// to stay.
+// Author: Todd S.
 package main
 
 import (
