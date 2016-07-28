@@ -12,6 +12,11 @@ import (
 	"strings"
 )
 
+type Card struct {
+	face, suit string
+	value int
+}
+
 func askYn(q string) bool {
 	var a string
 	fmt.Printf(q)
