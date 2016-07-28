@@ -86,12 +86,12 @@ func main() {
 			switch {
 				case strings.Contains(newcard, "Ace") && t + 11 <= 21: 
 					highace = true
-					t = t+11
+					t += 11
 				case highace == true && t > 21: 
 					highace = false
-					t = t-10
+					t -= 10
 				default:
-					t = t+value
+					t += value
 			}
 			hand = append(hand, newcard)
 			fmt.Printf("Dealer deals a %s.\nNew score: %d\n", newcard, t)
@@ -102,7 +102,7 @@ func main() {
 		case highace == true && t > 21:
 			fmt.Println("High Ace becomes Low Ace...")
 			highace = false
-			t = t-10
+			t -= 10
 			fmt.Println("New score:", t)
 		case t == 21:
 			fmt.Println("BLACKJACK!! :D")
