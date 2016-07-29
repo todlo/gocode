@@ -35,7 +35,7 @@ func askYn(q string) bool {
 	}
 }
 
-func draw() (string, int) {
+func draw() (string, string, int) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	c := map[int]string{
 		1:"Ace",
@@ -54,30 +54,28 @@ func draw() (string, int) {
 	}
 	num := r.Intn(14-1) + 1
 	suit := [4]string{"Spades", "Diamonds", "Clubs", "Hearts"}
-	return c[num] + " of " + suit[r.Intn(4)], num
+	return c[num], suit[r.Intn(4)], num
 }
 
 func main() {
 	var highace bool
 	hand := make([]string, 2)
 
-	card1, score1 := draw()
-	if score1 > 10 { score1 = 10 }
-	if strings.Contains(card1, "Ace") {
-		score1 = score1 + 10
-		highace = true
-	}
-	hand[0] = card1
+	x, y, z := draw()
+	c1 := Card{x, y, z}
+	x, y, z = draw()
+	c2 := Card{x, y, z}
 
-	card2, score2 := draw()
-	if score2 > 10 { score2 = 10 }
-	if strings.Contains(card2, "Ace") && score1 < 11 {
-		score2 = score2 + 10
-		highace = true
-	}
-	hand[1] = card2
+	if c1.value > 10 { c1.value = 10 }
+	if c2.value > 10 { c2.value = 10 }
+	if c1.face == "Ace" { c1.value = 11 ; highace = true }
+	if c2.face == "Ace" && c1.value <11 { c2.value = 11 ; highace = true }
 
-	t := score1+score2
+	hand[0] = fmt.Sprint(c1.face, " of ", c1.suit)
+	hand[1] = fmt.Sprint(c2.face, " of ", c2.suit)
+
+	t := c1.value + c2.value
+
 	fmt.Println("*** Hand: ***")
 	for i := range hand {
 		fmt.Println(hand[i])
@@ -86,20 +84,20 @@ func main() {
 
 	for t < 21 {
 		if askYn("Would you like to hit? [Y/n]: ") {
-			newcard, value := draw()
-			if value > 10 { value = 10 }
+			nf, ns, nv := draw()
+			if nv > 10 { nv = 10 }
 			switch {
-				case strings.Contains(newcard, "Ace") && t + 11 <= 21:
+				case nf == "Ace" && t + 11 <= 21:
 					highace = true
 					t += 11
 				case highace == true && t > 21:
 					highace = false
 					t -= 10
 				default:
-					t += value
+					t += nv
 			}
-			hand = append(hand, newcard)
-			fmt.Printf("Dealer deals a %s.\nNew score: %d\n", newcard, t)
+			hand = append(hand, fmt.Sprint(nf, " of ", ns))
+			fmt.Printf("You are dealt a %s of %s.\nNew score: %d\n", nf, ns, t)
 		} else {
 			break
 		}
