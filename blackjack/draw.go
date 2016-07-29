@@ -75,6 +75,7 @@ func main() {
 	hand[1] = fmt.Sprint(c2.face, " of ", c2.suit)
 
 	t := c1.value + c2.value
+	if t == 21 { fmt.Println("BLACKJACK!! :D") }
 
 	fmt.Println("*** Hand: ***")
 	for i := range hand {
@@ -97,11 +98,14 @@ func main() {
 					t += nv
 			}
 			hand = append(hand, fmt.Sprint(nf, " of ", ns))
-			fmt.Printf("You are dealt a %s of %s.\nNew score: %d\n", nf, ns, t)
+			fmt.Printf("*** Your next card: %s of %s.\n", nf, ns)
 		} else {
 			break
 		}
 		switch {
+		case t < 21 && len(hand) == 5:
+			fmt.Println("5-card hand... YOU WIN!! :D")
+			break
 		case highace == true && t > 21:
 			fmt.Println("High Ace becomes Low Ace...")
 			highace = false
@@ -111,8 +115,8 @@ func main() {
 			fmt.Println("BLACKJACK!! :D")
 		case t > 21:
 			fmt.Println("BUSTED! :(")
-		case t < 21 && len(hand) == 5:
-			fmt.Println("5-card hand... YOU WIN!! :D")
+		default:
+			fmt.Println("Current score:", t)
 		}
 	}
 	fmt.Println("Final hand:")
