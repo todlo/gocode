@@ -36,8 +36,21 @@ func draw() (string, string, int) {
 func main() {
 	x, y, z := draw()
 	card1 := Card{x, y, z}
+	x, y, z = draw()
+	card2 := Card{x, y, z}
+
+	if card1.value > 10 { card1.value = 10 }
+	if card2.value > 10 { card2.value = 10 }
+	if card1.face == "Ace" { card1.value = 11 }
+	if card2.face == "Ace" && card1.value <11 { card2.value = 11 }
+
 	fmt.Printf("card1: %v\n", card1)
 	fmt.Printf("card1.face: %v\n", card1.face)
 	fmt.Printf("card1.suit: %v\n", card1.suit)
 	fmt.Printf("card1.value: %v\n", card1.value)
+
+	fmt.Printf("card2: %v\n", card2)
+	fmt.Printf("card2.face: %v\n", card2.face)
+	fmt.Printf("card2.suit: %v\n", card2.suit)
+	fmt.Printf("card2.value: %v\n", card2.value)
 }
