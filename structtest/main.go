@@ -34,23 +34,28 @@ func draw() (string, string, int) {
 }
 
 func main() {
+	var highace bool
+
 	x, y, z := draw()
-	card1 := Card{x, y, z}
+	c1 := Card{x, y, z}
 	x, y, z = draw()
-	card2 := Card{x, y, z}
+	c2 := Card{x, y, z}
 
-	if card1.value > 10 { card1.value = 10 }
-	if card2.value > 10 { card2.value = 10 }
-	if card1.face == "Ace" { card1.value = 11 }
-	if card2.face == "Ace" && card1.value <11 { card2.value = 11 }
+	if c1.value > 10 { c1.value = 10 }
+	if c2.value > 10 { c2.value = 10 }
+	if c1.face == "Ace" { c1.value = 11 ; highace = true }
+	if c2.face == "Ace" && c1.value <11 { c2.value = 11 ; highace = true }
 
-	fmt.Printf("card1: %v\n", card1)
-	fmt.Printf("card1.face: %v\n", card1.face)
-	fmt.Printf("card1.suit: %v\n", card1.suit)
-	fmt.Printf("card1.value: %v\n", card1.value)
+	fmt.Printf("%s of %s\n", c1.face, c1.suit)
+	fmt.Printf("c1.face: %v\n", c1.face)
+	fmt.Printf("c1.suit: %v\n", c1.suit)
+	fmt.Printf("c1.value: %v\n", c1.value)
 
-	fmt.Printf("card2: %v\n", card2)
-	fmt.Printf("card2.face: %v\n", card2.face)
-	fmt.Printf("card2.suit: %v\n", card2.suit)
-	fmt.Printf("card2.value: %v\n", card2.value)
+	fmt.Printf("%s of %s\n", c2.face, c2.suit)
+	fmt.Printf("c2.face: %v\n", c2.face)
+	fmt.Printf("c2.suit: %v\n", c2.suit)
+	fmt.Printf("c2.value: %v\n", c2.value)
+
+	fmt.Printf("Total: %d\n", c1.value + c2.value)
+	fmt.Printf("Ace detected? %v\n", highace)
 }
