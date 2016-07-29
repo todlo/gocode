@@ -75,13 +75,14 @@ func main() {
 	hand[1] = fmt.Sprint(c2.face, " of ", c2.suit)
 
 	t := c1.value + c2.value
-	if t == 21 { fmt.Println("BLACKJACK!! :D") }
 
 	fmt.Println("*** Hand: ***")
 	for i := range hand {
-		fmt.Println(hand[i])
+		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
+
 	fmt.Println("Score:", t)
+	if t == 21 { fmt.Println("BLACKJACK!! :D") }
 
 	for t < 21 {
 		if askYn("Would you like to hit? [Y/n]: ") {
@@ -91,9 +92,6 @@ func main() {
 				case nf == "Ace" && t + 11 <= 21:
 					highace = true
 					t += 11
-				case highace == true && t > 21:
-					highace = false
-					t -= 10
 				default:
 					t += nv
 			}
@@ -102,15 +100,16 @@ func main() {
 		} else {
 			break
 		}
-		switch {
-		case t < 21 && len(hand) == 5:
-			fmt.Println("5-card hand... YOU WIN!! :D")
-			break
-		case highace == true && t > 21:
+		if highace == true && t > 21 {
 			fmt.Println("High Ace becomes Low Ace...")
 			highace = false
 			t -= 10
-			fmt.Println("New score:", t)
+		}
+		if t < 21 && len(hand) == 5 {
+			fmt.Println("5-card hand... YOU WIN!! :D")
+			break
+		}
+		switch {
 		case t == 21:
 			fmt.Println("BLACKJACK!! :D")
 		case t > 21:
@@ -121,7 +120,7 @@ func main() {
 	}
 	fmt.Println("Final hand:")
 	for i := range hand {
-		fmt.Println(hand[i])
+		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
 	fmt.Println("Final score:", t)
 }
