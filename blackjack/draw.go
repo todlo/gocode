@@ -100,16 +100,14 @@ func main() {
 
 	t := c1.value + c2.value
 
-	fmt.Println("*** Hand: ***")
+	fmt.Println("*** Your Hand: ***")
 	for i := range hand {
 		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
 
 	dhand, dt, _ := dealerHand()
 	fmt.Println("*** Dealer's Hand: ***")
-	for i := range dhand {
-		fmt.Printf("%d. %s\n", i+1, dhand[i])
-	}
+	fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
 
 	fmt.Println("Score:", t)
 	if t == 21 { fmt.Println("BLACKJACK!! :D") }
@@ -128,6 +126,7 @@ func main() {
 			hand = append(hand, fmt.Sprint(nf, " of ", ns))
 			fmt.Printf("*** Your next card: %s of %s.\n", nf, ns)
 		} else {
+			fmt.Println("Dealer's second card:", dhand[1])
 			break
 		}
 		if highace == true && t > 21 {
@@ -161,5 +160,9 @@ func main() {
 		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
 	fmt.Println("Final score:", t)
-	fmt.Println("Dealer's score:", dt)
+	fmt.Print("Dealer's score: ", dt, " (")
+	for i := range dhand {
+		fmt.Printf("%s ", dhand[i])
+	}
+	fmt.Printf(")\n")
 }
