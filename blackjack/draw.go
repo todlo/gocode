@@ -147,8 +147,14 @@ func main() {
 			fmt.Println("Current score:", t)
 		}
 	}
+	if dt < 17 {
+		nf, ns, nv := draw()
+		if nv > 10 { nv = 10 }
+		dhand = append(dhand, fmt.Sprint(nf, " of ", ns))
+		dt += nv
+	}
 	switch {
-	case t > dt:
+	case t > dt && t <= 21 :
 		fmt.Println("You Win!")
 	case t < dt:
 		fmt.Println("You Lose. :(")
