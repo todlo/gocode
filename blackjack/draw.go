@@ -57,6 +57,30 @@ func draw() (string, string, int) {
 	return c[num], suit[r.Intn(4)], num
 }
 
+func dealerHand() ([]string, int, bool) {
+	var highace bool
+	hand := make([]string, 2)
+
+	x, y, z := draw()
+	c1 := Card{x, y, z}
+	x, y, z = draw()
+	c2 := Card{x, y, z}
+
+	if c1.value > 10 { c1.value = 10 }
+	if c2.value > 10 { c2.value = 10 }
+	if c1.face == "Ace" { c1.value = 11 ; highace = true }
+	if c2.face == "Ace" && c1.value <11 { c2.value = 11 ; highace = true }
+
+
+	hand[0] = fmt.Sprint(c1.face, " of ", c1.suit)
+	hand[1] = fmt.Sprint(c2.face, " of ", c2.suit)
+
+	t := c1.value + c2.value
+
+	if t == 21 { fmt.Println("Dealer has blackjack!") }
+	return hand, t, highace
+}
+
 func main() {
 	var highace bool
 	hand := make([]string, 2)
@@ -79,6 +103,12 @@ func main() {
 	fmt.Println("*** Hand: ***")
 	for i := range hand {
 		fmt.Printf("%d. %s\n", i+1, hand[i])
+	}
+
+	dhand, dt, _ := dealerHand()
+	fmt.Println("*** Dealer's Hand: ***")
+	for i := range dhand {
+		fmt.Printf("%d. %s\n", i+1, dhand[i])
 	}
 
 	fmt.Println("Score:", t)
@@ -118,9 +148,18 @@ func main() {
 			fmt.Println("Current score:", t)
 		}
 	}
+	switch {
+	case t > dt:
+		fmt.Println("You Win!")
+	case t < dt:
+		fmt.Println("You Lose. :(")
+	case t == dt:
+		fmt.Println("Push!")
+	}
 	fmt.Println("Final hand:")
 	for i := range hand {
 		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
 	fmt.Println("Final score:", t)
+	fmt.Println("Dealer's score:", dt)
 }
