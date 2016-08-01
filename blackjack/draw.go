@@ -126,7 +126,7 @@ func main() {
 			hand = append(hand, fmt.Sprint(nf, " of ", ns))
 			fmt.Printf("*** Your next card: %s of %s.\n", nf, ns)
 		} else {
-			fmt.Println("Dealer's second card:", dhand[1])
+			fmt.Println(" - Dealer's second card:", dhand[1])
 			break
 		}
 		if highace == true && t > 21 {
@@ -147,17 +147,21 @@ func main() {
 			fmt.Println("Current score:", t)
 		}
 	}
-	if dt < 17 {
-		nf, ns, nv := draw()
-		if nv > 10 { nv = 10 }
-		dhand = append(dhand, fmt.Sprint(nf, " of ", ns))
-		dt += nv
+	if t < 21 {
+		for dt < 17 {
+			nf, ns, nv := draw()
+			if nv > 10 { nv = 10 }
+			dhand = append(dhand, fmt.Sprint(nf, " of ", ns))
+			dt += nv
+		}
 	}
 	switch {
 	case t > dt && t <= 21 :
 		fmt.Println("You Win!")
-	case t < dt:
+	case t < dt && dt <= 21 && len(hand) < 5:
 		fmt.Println("You Lose. :(")
+	case dt > 21 && t < 21:
+		fmt.Println("Dealer busts.. You Win!! :)")
 	case t == dt:
 		fmt.Println("Push!")
 	}
@@ -166,7 +170,7 @@ func main() {
 		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
 	fmt.Println("Final score:", t)
-	fmt.Print("Dealer's score: ", dt, " (")
+	fmt.Print("Dealer's score: ", dt, " ( ")
 	for i := range dhand {
 		fmt.Printf("%s ", dhand[i])
 	}
