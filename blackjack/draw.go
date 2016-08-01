@@ -126,7 +126,7 @@ func main() {
 			hand = append(hand, fmt.Sprint(nf, " of ", ns))
 			fmt.Printf("*** Your next card: %s of %s.\n", nf, ns)
 		} else {
-			fmt.Println(" - Dealer's second card:", dhand[1])
+			fmt.Println(" - Dealer's second card:", dhand[1], "( for a total of", dt, ")")
 			break
 		}
 		if highace == true && t > 21 {
@@ -148,11 +148,12 @@ func main() {
 		}
 	}
 	if t < 21 {
-		for dt < 17 {
+		for i := 0; dt < 17; i++ {
 			nf, ns, nv := draw()
 			if nv > 10 { nv = 10 }
 			dhand = append(dhand, fmt.Sprint(nf, " of ", ns))
 			dt += nv
+			fmt.Println(" - Dealer's next card:", dhand[i+2], "( for a total of", dt, ")")
 		}
 	}
 	switch {
