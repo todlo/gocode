@@ -17,12 +17,8 @@ func reverse(r string) string {
 	return string(x)
 }
 
-func atest(a string) bool {
+func rtest(a string) bool {
 	return a == reverse(a)
-}
-
-func btest(b string) bool {
-	return b == reverse(b)
 }
 
 func main() {
@@ -30,8 +26,8 @@ func main() {
 	for i := 1; i <=1000000; i++ {
 		a := fmt.Sprintf("%v", i)
 		b := fmt.Sprintf("%b", i)
-		if atest(a) == true {
-			if btest(b) == true {
+		if rtest(a) {
+			if rtest(b) {
 				fmt.Printf("%d is palindromic in both base 10 and base 2 (%b).\n", i, i)
 				counter += i
 			}
