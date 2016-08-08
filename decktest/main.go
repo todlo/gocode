@@ -1,8 +1,8 @@
-// decktest is just a place for me to figure out how to draw a card
+// decktest is just a place for me to figure out how to draw a single card
 // from a 1- or 9-stack deck for blackjack purposes (since, as of now,
-// my blackjack program just draw from an "infinite" deck, with no control
+// my blackjack program just draws from an "infinite" deck, with no control
 // over how many of what suit/type of card gets drawn. This should make
-// it closer to an actual, casino-style game of blackjack.
+// it closer to an actual, casino-style game of blackjack).
 package main
 
 import (
@@ -41,7 +41,7 @@ func main() {
 		12:"Queen",
 		13:"King",
 	}
-	suit := [4]string{"Spades", "Diamonds", "Clubs", "Hearts"}
+	suit := [4]string{"Clubs", "Diamonds", "Hearts", "Spades"}
 
 	for j := 0; j < 4; j++ {
 		for i := 1; i < 14; i++ {
