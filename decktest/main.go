@@ -7,21 +7,29 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 )
 
-type Deck struct {
-	CardsHeld int
-	CardsDealt int
+type shuffler interface {
+	Len() int
+	Swap(i, j int)
 }
 
-type Card struct {
-	face, suit string
-	value int
+func shuffle(s shuffler) {
+	for i := 0; i < s.Len(); i++ {
+		j := rand.Intn(s.Len()-i)
+		s.Swap(i, j)
+	}
 }
 
-// CardPuller represents behavior of pulling a card from the deck.
-type CardPuller interface {
-	PullCard(cardSupply *int, d *Deck)
+type cardSlice []string
+
+func (s cardSlice) Len() int {
+	return len(s)
+}
+
+func (s cardSlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 func main() {
@@ -50,8 +58,21 @@ func main() {
 	}
 
 
-	fmt.Println("Deck (unshuffled):")
+	fmt.Println("Unshuffled deck:")
 	for x := range deck {
 		fmt.Printf("%d: %s\n", x+1, deck[x])
 	}
+
+	s := cardSlice(deck)
+	shuffle(s)
+	fmt.Println("Shuffled deck:")
+	for x := range deck {
+		fmt.Printf("%d: %s\n", x+1, deck[x])
+	}
+
+	fmt.Println("Drawing from top of deck (pretend this is a random card):", deck[0])
+	topcard := deck[:1]
+	deck = deck[1:]
+	fmt.Println("Your card...:", topcard[0])
+	fmt.Println("There are now", len(deck), "cards in the deck.")
 }
