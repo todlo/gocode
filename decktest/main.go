@@ -65,10 +65,9 @@ func main() {
 		fmt.Printf("%d: %s\n", x+1, deck[x])
 	}
 
-	s := cardSlice(deck)
-	shuffle(s)
-	shuffle(s)
-	shuffle(s)
+	shuffle(cardSlice(deck))
+	shuffle(cardSlice(deck))
+	shuffle(cardSlice(deck))
 
 	fmt.Println("Shuffled deck:")
 	for x := range deck {
