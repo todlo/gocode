@@ -17,7 +17,9 @@ type shuffler interface {
 }
 
 func shuffle(s shuffler) {
+	time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	// fmt.Println("DEBUG:", time.Now().UnixNano())
 	for i := 0; i < s.Len(); i++ {
 		j := r.Intn(s.Len()-i)
 		s.Swap(i, j)
@@ -35,7 +37,7 @@ func (s cardSlice) Swap(i, j int) {
 }
 
 func main() {
-	deck := make([]string, 0)
+	var deck []string
 	c := map[int]string{
 		1:"Ace",
 		2:"Two",
@@ -59,24 +61,14 @@ func main() {
 		}
 	}
 
-
-	fmt.Println("Unshuffled deck:")
-	for x := range deck {
-		fmt.Printf("%d: %s\n", x+1, deck[x])
-	}
-
+	fmt.Println("Shuffling deck...")
 	shuffle(cardSlice(deck))
 	shuffle(cardSlice(deck))
 	shuffle(cardSlice(deck))
-
-	fmt.Println("Shuffled deck:")
-	for x := range deck {
-		fmt.Printf("%d: %s\n", x+1, deck[x])
-	}
 
 	fmt.Println("Drawing from top of deck...")
 	topcard := deck[:1]
 	deck = deck[1:]
-	fmt.Println("Your card...:", topcard[0])
+	fmt.Println("Your card:", topcard[0])
 	fmt.Println("There are now", len(deck), "cards in the deck.")
 }
