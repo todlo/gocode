@@ -62,9 +62,9 @@ func main() {
 	}
 
 	fmt.Println("Shuffling deck...")
-	shuffle(cardSlice(deck))
-	shuffle(cardSlice(deck))
-	shuffle(cardSlice(deck))
+	for i := 0; i < 4; i++ {
+		shuffle(cardSlice(deck))
+	}
 
 	fmt.Println("Drawing from top of deck...")
 	topcard := deck[:1]
