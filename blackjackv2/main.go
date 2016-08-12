@@ -38,24 +38,25 @@ func askYn(q string) bool {
 }
 
 func cardEval(c string) int {
+	fmt.Println("DEBUG: c is", c)
 	switch {
-	case strings.Contains("Ace", c):
+	case strings.HasPrefix(c, "Ace"):
 		return 11
-	case strings.Contains("Two", c):
+	case strings.HasPrefix(c, "Two"):
 		return 2
-	case strings.Contains("Three", c):
+	case strings.HasPrefix(c, "Three"):
 		return 3
-	case strings.Contains("Four", c):
+	case strings.HasPrefix(c, "Four"):
 		return 4
-	case strings.Contains("Five", c):
+	case strings.HasPrefix(c, "Five"):
 		return 5
-	case strings.Contains("Six", c):
+	case strings.HasPrefix(c, "Six"):
 		return 6
-	case strings.Contains("Seven", c):
+	case strings.HasPrefix(c, "Seven"):
 		return 7
-	case strings.Contains("Eight", c):
+	case strings.HasPrefix(c, "Eight"):
 		return 8
-	case strings.Contains("Nine", c):
+	case strings.HasPrefix(c, "Nine"):
 		return 9
 	default:
 		return 10
@@ -63,7 +64,8 @@ func cardEval(c string) int {
 }
 
 func draw() (string, int) {
-	topcard := fmt.Sprint(d[:1])
+	//topcard := fmt.Sprint(d[:1])
+	topcard := d[0]
 	d = d[1:]
 	value := cardEval(topcard)
 	return topcard, value
@@ -181,4 +183,5 @@ func main() {
 		fmt.Printf("%s ", dhand[i])
 	}
 	fmt.Printf(")\n")
+	fmt.Println("DEBUG: len(deck) is", len(d))
 }
