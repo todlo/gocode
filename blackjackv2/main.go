@@ -1,4 +1,4 @@
-// blackjack draws from an "infinite" stack // TODO: Add option to pull from single or 9-stack deck.
+// blackjack draws from a single- stack deck.// TODO: Add option to pull from single OR 9-stack deck.
 // Deals initial 2 cards, then asks user if they'd like to hit (default is yes) until
 // user wins (score == 21; blackjack), busts (score > 21; bust), gets 5 cards, or chooses
 // to stay.
@@ -9,15 +9,15 @@ import (
 	"fmt"
 	"strings"
 
-	"gocode/blackjackv2/deck"
+	"./deck"
 )
+
+var d = deck.Deck()
 
 type Card struct {
 	card string
 	value int
 }
-
-var d = deck.Deck()
 
 func askYn(q string) bool {
 	var a string
@@ -38,7 +38,6 @@ func askYn(q string) bool {
 }
 
 func cardEval(c string) int {
-	fmt.Println("DEBUG: c is", c)
 	switch {
 	case strings.HasPrefix(c, "Ace"):
 		return 11
@@ -64,14 +63,13 @@ func cardEval(c string) int {
 }
 
 func draw() (string, int) {
-	//topcard := fmt.Sprint(d[:1])
 	topcard := d[0]
 	d = d[1:]
 	value := cardEval(topcard)
 	return topcard, value
 }
 
-func dealerHand() ([]string, int, bool) {
+func handInit() ([]string, int, bool) {
 	var highace bool
 	hand := make([]string, 2)
 
@@ -80,7 +78,7 @@ func dealerHand() ([]string, int, bool) {
 	x, y = draw()
 	c2 := Card{x, y}
 
-	if strings.Contains("Ace", c1.card) { c1.value = 11 ; highace = true }
+	if strings.Contains("Ace", c1.card) {c1.value = 11 ; highace = true }
 	if strings.Contains("Ace", c2.card) && c1.value <11 { c2.value = 11 ; highace = true }
 
 	hand[0] = c1.card
@@ -88,35 +86,24 @@ func dealerHand() ([]string, int, bool) {
 
 	t := c1.value + c2.value
 
-	if t == 21 { fmt.Println("Dealer has blackjack!") }
 	return hand, t, highace
 }
 
 func main() {
-	var highace bool
-	hand := make([]string, 2)
-
-	x, y := draw()
-	c1 := Card{x, y}
-	x, y = draw()
-	c2 := Card{x, y}
-
-	if strings.Contains("Ace", c1.card) { c1.value = 11 ; highace = true }
-	if strings.Contains("Ace", c2.card) && c1.value <11 { c2.value = 11 ; highace = true }
-
-	hand[0] = c1.card
-	hand[1] = c2.card
-
-	t := c1.value + c2.value
+	hand, t, highace := handInit()
 
 	fmt.Println("*** Your Hand: ***")
 	for i := range hand {
 		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
 
-	dhand, dt, _ := dealerHand()
 	fmt.Println("*** Dealer's Hand: ***")
-	fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
+	dhand, dt, _ := handInit()
+	if dt == 21 {
+		fmt.Printf("Dealer has blackjack!\n1. %s\n2. %s\n", dhand[0], dhand[1])
+	} else {
+		fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
+	}
 
 	fmt.Println("Score:", t)
 	if t == 21 { fmt.Println("BLACKJACK!! :D") }
