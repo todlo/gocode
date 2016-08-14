@@ -1,4 +1,4 @@
-// blackjack draws from a single- stack deck.// TODO: Add option to pull from single OR 9-stack deck.
+// blackjack draws from a single-stack deck.// TODO: Add option to pull from single OR 9-stack deck.
 // Deals initial 2 cards, then asks user if they'd like to hit (default is yes) until
 // user wins (score == 21; blackjack), busts (score > 21; bust), gets 5 cards, or chooses
 // to stay.

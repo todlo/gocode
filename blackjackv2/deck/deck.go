@@ -1,8 +1,6 @@
-// decktest is just a place for me to figure out how to draw a single card
-// from a 1- or 9-stack deck for blackjack purposes (since, as of now,
-// my blackjack program just draws from an "infinite" deck, with no control
-// over how many of what suit/type of card gets drawn). This should make
-// it closer to an actual, casino-style game of blackjack.
+// Deck returns a []string populated with a shuffled 52-card deck.
+// Can be used for any number of card games.
+// Author: Todd S.
 package deck
 
 import (
@@ -19,7 +17,6 @@ type shuffler interface {
 func shuffle(s shuffler) {
 	time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	// fmt.Println("DEBUG:", time.Now().UnixNano())
 	for i := 0; i < s.Len(); i++ {
 		j := r.Intn(s.Len()-i)
 		s.Swap(i, j)
