@@ -129,57 +129,66 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 }
 
 func main() {
-	hand, t, highace := handInit()
+	var handcount int
+	for handcount < 5 {
+		hand, t, highace := handInit()
 
-	fmt.Println("*** Your Hand: ***")
-	for i := range hand {
-		fmt.Printf("%d. %s\n", i+1, hand[i])
-	}
+		fmt.Println("*** Your Hand: ***")
+		for i := range hand {
+			fmt.Printf("%d. %s\n", i+1, hand[i])
+		}
 
-	fmt.Println("*** Dealer's Hand: ***")
-	dhand, dt, _ := handInit()
-	if dt == 21 {
-		fmt.Printf("Dealer has blackjack!\n1. %s\n2. %s\n", dhand[0], dhand[1])
-	} else {
-		fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
-	}
+		fmt.Println("*** Dealer's Hand: ***")
+		dhand, dt, _ := handInit()
+		if dt == 21 {
+			fmt.Printf("Dealer has blackjack!\n1. %s\n2. %s\n", dhand[0], dhand[1])
+		} else {
+			fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
+		}
 
-	fmt.Println("Score:", t)
-	if t == 21 {
-		fmt.Println("BLACKJACK!! :D")
-	} else {
-		t, hand, highace = play(t, hand, highace)
-	}
+		fmt.Println("Score:", t)
+		if t == 21 {
+			fmt.Println("BLACKJACK!! :D")
+		} else {
+			t, hand, highace = play(t, hand, highace)
+		}
 
-	fmt.Println(" - Dealer's second card:", dhand[1], "(for a total of " + fmt.Sprint(dt) + ")")
+		fmt.Println(" - Dealer's second card:", dhand[1], "(for a total of " + fmt.Sprint(dt) + ")")
 
-	if t < 21 {
-		for i := 0; dt < 17; i++ {
-			nc, nv := draw()
-			dhand = append(dhand, nc)
-			dt += nv
-			fmt.Println(" - Dealer's next card:", dhand[i+2], "( for a total of", dt, ")")
+		if t < 21 {
+			for i := 0; dt < 17; i++ {
+				nc, nv := draw()
+				dhand = append(dhand, nc)
+				dt += nv
+				fmt.Println(" - Dealer's next card:", dhand[i+2], "( for a total of", dt, ")")
+			}
+		}
+		switch {
+		case t > dt && t <= 21 :
+			fmt.Println("You Win!")
+		case t < dt && dt <= 21 && len(hand) < 5:
+			fmt.Println("You Lose. :(")
+		case dt > 21 && t < 21:
+			fmt.Println("Dealer busts.. You Win!! :)")
+		case t == dt:
+			fmt.Println("Push!")
+		}
+		fmt.Println("Final hand:")
+		for i := range hand {
+			fmt.Printf("%d. %s\n", i+1, hand[i])
+		}
+		fmt.Println("** Final score:", t)
+		fmt.Print("Dealer's score: ", dt, " (")
+		for i := range dhand {
+			fmt.Printf("%s ", dhand[i])
+		}
+		fmt.Printf(")\n")
+		fmt.Println("DEBUG: len(deck) is", len(d))
+		if askYn("Would you like to continue? [Y/n]: ") {
+			handcount++
+			if handcount == 5 { handcount = 0 ; fmt.Println("Reshuffling...") } //TODO: make this actually reshuffle discarded cards.
+		} else {
+			break
 		}
 	}
-	switch {
-	case t > dt && t <= 21 :
-		fmt.Println("You Win!")
-	case t < dt && dt <= 21 && len(hand) < 5:
-		fmt.Println("You Lose. :(")
-	case dt > 21 && t < 21:
-		fmt.Println("Dealer busts.. You Win!! :)")
-	case t == dt:
-		fmt.Println("Push!")
-	}
-	fmt.Println("Final hand:")
-	for i := range hand {
-		fmt.Printf("%d. %s\n", i+1, hand[i])
-	}
-	fmt.Println("** Final score:", t)
-	fmt.Print("Dealer's score: ", dt, " (")
-	for i := range dhand {
-		fmt.Printf("%s ", dhand[i])
-	}
-	fmt.Printf(")\n")
-	fmt.Println("DEBUG: len(deck) is", len(d))
 }
