@@ -78,8 +78,8 @@ func handInit() ([]string, int, bool) {
 	x, y = draw()
 	c2 := Card{x, y}
 
-	if strings.Contains("Ace", c1.card) {c1.value = 11 ; highace = true }
-	if strings.Contains("Ace", c2.card) && c1.value <11 { c2.value = 11 ; highace = true }
+	if strings.Contains(c1.card, "Ace") { highace = true }
+	if strings.Contains(c2.card, "Ace") && highace == true { c2.value = 1 }
 
 	hand[0] = c1.card
 	hand[1] = c2.card
@@ -89,8 +89,49 @@ func handInit() ([]string, int, bool) {
 	return hand, t, highace
 }
 
+func play(t int, hand []string, highace bool) (int, []string, bool) {
+	fmt.Println("DEBUG: highace in play is", highace)
+	for t < 21 {
+		if askYn("Would you like to hit? [Y/n]: ") {
+			nc, nv := draw()
+			switch {
+			case strings.Contains(nc, "Ace") && t + nv <= 21:
+				highace = true
+				t += nv
+			case strings.Contains(nc, "Ace") && t + nv > 21:
+				t++
+			default:
+				t += nv
+			}
+			hand = append(hand, nc)
+			fmt.Println("*** Your next card:", nc)
+		} else {
+			break
+		}
+		if highace == true && t > 21 {
+			fmt.Println("High Ace ('soft' hand) becomes Low Ace ('hard' hand)...")
+			highace = false
+			t -= 10
+		}
+		if t < 21 && len(hand) == 5 {
+			fmt.Println("5l-card hand... YOU WIN!! :D")
+			break
+		}
+		switch {
+		case t == 21:
+			fmt.Println("BLACKJACK!! :D")
+		case t > 21:
+			fmt.Println("B U S T E D! :(")
+		default:
+			fmt.Println("Current score:", t)
+		}
+	}
+	return t, hand, highace
+}
+
 func main() {
 	hand, t, highace := handInit()
+	fmt.Println("DEBUG: highace is", highace)
 
 	fmt.Println("*** Your Hand: ***")
 	for i := range hand {
@@ -106,42 +147,14 @@ func main() {
 	}
 
 	fmt.Println("Score:", t)
-	if t == 21 { fmt.Println("BLACKJACK!! :D") }
-
-	for t < 21 {
-		if askYn("Would you like to hit? [Y/n]: ") {
-			nc, nv := draw()
-			switch {
-				case strings.Contains("Ace",nc) && t + 11 <= 21:
-					highace = true
-					t += 11
-				default:
-					t += nv
-			}
-			hand = append(hand, nc)
-			fmt.Printf("*** Your next card: %s.\n", nc)
-		} else {
-			fmt.Println(" - Dealer's second card:", dhand[1], "( for a total of", dt, ")")
-			break
-		}
-		if highace == true && t > 21 {
-			fmt.Println("High Ace becomes Low Ace...")
-			highace = false
-			t -= 10
-		}
-		if t < 21 && len(hand) == 5 {
-			fmt.Println("5-card hand... YOU WIN!! :D")
-			break
-		}
-		switch {
-		case t == 21:
-			fmt.Println("BLACKJACK!! :D")
-		case t > 21:
-			fmt.Println("BUSTED! :(")
-		default:
-			fmt.Println("Current score:", t)
-		}
+	if t == 21 {
+		fmt.Println("BLACKJACK!! :D")
+	} else {
+		t, hand, highace = play(t, hand, highace)
 	}
+
+	fmt.Println(" - Dealer's second card:", dhand[1], "(for a total of " + fmt.Sprint(dt) + ")")
+
 	if t < 21 {
 		for i := 0; dt < 17; i++ {
 			nc, nv := draw()
@@ -164,8 +177,8 @@ func main() {
 	for i := range hand {
 		fmt.Printf("%d. %s\n", i+1, hand[i])
 	}
-	fmt.Println("Final score:", t)
-	fmt.Print("Dealer's score: ", dt, " ( ")
+	fmt.Println("** Final score:", t)
+	fmt.Print("Dealer's score: ", dt, " (")
 	for i := range dhand {
 		fmt.Printf("%s ", dhand[i])
 	}
