@@ -90,7 +90,6 @@ func handInit() ([]string, int, bool) {
 }
 
 func play(t int, hand []string, highace bool) (int, []string, bool) {
-	fmt.Println("DEBUG: highace in play is", highace)
 	for t < 21 {
 		if askYn("Would you like to hit? [Y/n]: ") {
 			nc, nv := draw()
@@ -114,7 +113,7 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 			t -= 10
 		}
 		if t < 21 && len(hand) == 5 {
-			fmt.Println("5l-card hand... YOU WIN!! :D")
+			fmt.Println("5-card hand... YOU WIN!! :D")
 			break
 		}
 		switch {
@@ -131,7 +130,6 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 
 func main() {
 	hand, t, highace := handInit()
-	fmt.Println("DEBUG: highace is", highace)
 
 	fmt.Println("*** Your Hand: ***")
 	for i := range hand {
