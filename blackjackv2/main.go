@@ -13,7 +13,8 @@ import (
 	"./shuffler"
 )
 
-var d = deck.Deck()
+var unshuffledDeck = deck.Deck()
+var d = shuffle(unshuffledDeck)
 
 type Card struct {
 	card string
@@ -136,7 +137,6 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 }
 
 func main() {
-	d = shuffle(d)
 	dd := make([]string, 0)
 	var handcount int
 	for handcount < 5 {
@@ -201,17 +201,10 @@ func main() {
 
 		dd = append(dd, hand...)
 		dd = append(dd, dhand...)
-		fmt.Println("Discarded count:", len(dd))
 
-		fmt.Println("DEBUG: len(deck) is", len(d))
 		if askYn("Would you like to continue? [Y/n]: ") {
 			handcount++
-			if handcount == 5 {
-				handcount = 0
-				fmt.Println("Reshuffling...")
-				dd = append(dd, d...)
-				d = shuffle(dd) //TODO: Figure out a way to export this... not WAI.
-			}
+			if handcount == 5 { handcount = 0 ; d = shuffle(append(d, dd...)) ; dd = make([]string, 0) }
 		} else {
 			break
 		}
