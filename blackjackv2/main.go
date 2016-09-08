@@ -180,6 +180,8 @@ func main() {
 			fmt.Println("You Lose. :(")
 		case dt > 21 && t < 21:
 			fmt.Println("Dealer busts.. You Win!! :)")
+		case dt == 21 && t < 21:
+			fmt.Println("You Lose. :(")
 		case t == dt:
 			fmt.Println("Push!")
 		}
@@ -199,12 +201,17 @@ func main() {
 
 		dd = append(dd, hand...)
 		dd = append(dd, dhand...)
-		fmt.Println("Discarded:", dd, "Count:", len(dd))
+		fmt.Println("Discarded count:", len(dd))
 
 		fmt.Println("DEBUG: len(deck) is", len(d))
 		if askYn("Would you like to continue? [Y/n]: ") {
 			handcount++
-			if handcount == 5 { handcount = 0 ; fmt.Println("Reshuffling...") } //TODO: make this actually reshuffle discarded cards.
+			if handcount == 5 {
+				handcount = 0
+				fmt.Println("Reshuffling...")
+				dd = append(dd, d...)
+				d = shuffle(dd) //TODO: Figure out a way to export this... not WAI.
+			}
 		} else {
 			break
 		}
