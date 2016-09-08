@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"./deck"
+	"./shuffler"
 )
 
 var d = deck.Deck()
@@ -17,6 +18,12 @@ var d = deck.Deck()
 type Card struct {
 	card string
 	value int
+}
+
+func shuffle(d []string) []string {
+	fmt.Println("Shuffling deck...")
+	shuffler.ShuffleDeck(d)
+	return d
 }
 
 func askYn(q string) bool {
@@ -129,6 +136,8 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 }
 
 func main() {
+	d = shuffle(d)
+	dd := make([]string, 0)
 	var handcount int
 	for handcount < 5 {
 		hand, t, highace := handInit()
@@ -163,6 +172,7 @@ func main() {
 				fmt.Println(" - Dealer's next card:", dhand[i+2], "( for a total of", dt, ")")
 			}
 		}
+
 		switch {
 		case t > dt && t <= 21 :
 			fmt.Println("You Win!")
@@ -173,16 +183,24 @@ func main() {
 		case t == dt:
 			fmt.Println("Push!")
 		}
+
 		fmt.Println("Final hand:")
 		for i := range hand {
 			fmt.Printf("%d. %s\n", i+1, hand[i])
 		}
+
 		fmt.Println("** Final score:", t)
 		fmt.Print("Dealer's score: ", dt, " (")
 		for i := range dhand {
 			fmt.Printf("%s ", dhand[i])
 		}
 		fmt.Printf(")\n")
+		fmt.Println()
+
+		dd = append(dd, hand...)
+		dd = append(dd, dhand...)
+		fmt.Println("Discarded:", dd, "Count:", len(dd))
+
 		fmt.Println("DEBUG: len(deck) is", len(d))
 		if askYn("Would you like to continue? [Y/n]: ") {
 			handcount++
