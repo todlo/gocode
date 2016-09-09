@@ -13,14 +13,17 @@ import (
 	"./shuffler"
 )
 
-var unshuffledDeck = deck.Deck()
-var d = shuffle(unshuffledDeck)
+var shuffleMe = deck.Deck()
+var d = shuffle(shuffleMe) // d=deck after the shuffle.
 
 type Card struct {
 	card string
 	value int
 }
 
+// shuffle takes a slice of strings (52 cards) and calls the imported
+// shuffler.ShuffleDeck() with them (shuffleMe, renamed as d
+// just for this function).
 func shuffle(d []string) []string {
 	fmt.Println("Shuffling deck...")
 	shuffler.ShuffleDeck(d)
@@ -45,6 +48,8 @@ func askYn(q string) bool {
 	}
 }
 
+// cardEval (card evaluator) applies blackjack scoring rules
+// to each card sent to it, returning a corresponding score.
 func cardEval(c string) int {
 	switch {
 	case strings.HasPrefix(c, "Ace"):
@@ -70,6 +75,9 @@ func cardEval(c string) int {
 	}
 }
 
+// The aptly named 'draw' does just that, drawing/returning the 'top'
+// card from the deck, after which deck equals deck, from the
+// second card 'til the end (d = d[1:]).
 func draw() (string, int) {
 	topcard := d[0]
 	d = d[1:]
@@ -77,6 +85,8 @@ func draw() (string, int) {
 	return topcard, value
 }
 
+// handInit (hand-initializer) is called to get the first 2 cards
+// of the hand for both dealer and player.
 func handInit() ([]string, int, bool) {
 	var highace bool
 	hand := make([]string, 2)
@@ -97,10 +107,13 @@ func handInit() ([]string, int, bool) {
 	return hand, t, highace
 }
 
+// play is where the player makes decisions about whether to stand or hit.
+// function returns the total score (t), full hand (hand), and whether
+// or not we're still holding a high ace (highace).
 func play(t int, hand []string, highace bool) (int, []string, bool) {
 	for t < 21 {
 		if askYn("Would you like to hit? [Y/n]: ") {
-			nc, nv := draw()
+			nc, nv := draw() // nc=new card; nv=new value.
 			switch {
 			case strings.Contains(nc, "Ace") && t + nv <= 21:
 				highace = true
@@ -137,7 +150,7 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 }
 
 func main() {
-	dd := make([]string, 0)
+	dd := make([]string, 0) // Discarded Deck
 	var handcount int
 	for handcount < 5 {
 		hand, t, highace := handInit()
@@ -149,11 +162,7 @@ func main() {
 
 		fmt.Println("*** Dealer's Hand: ***")
 		dhand, dt, _ := handInit()
-		if dt == 21 {
-			fmt.Printf("Dealer has blackjack!\n1. %s\n2. %s\n", dhand[0], dhand[1])
-		} else {
-			fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
-		}
+		fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
 
 		fmt.Println("Score:", t)
 		if t == 21 {
@@ -174,6 +183,8 @@ func main() {
 		}
 
 		switch {
+		case dt == 21:
+			fmt.Printf("Dealer has blackjack!\n1. %s\n2. %s\n", dhand[0], dhand[1])
 		case t > dt && t <= 21 :
 			fmt.Println("You Win!")
 		case t < dt && dt <= 21 && len(hand) < 5:
@@ -204,7 +215,12 @@ func main() {
 
 		if askYn("Would you like to continue? [Y/n]: ") {
 			handcount++
-			if handcount == 5 { handcount = 0 ; d = shuffle(append(d, dd...)) ; dd = make([]string, 0) }
+			if handcount == 5 {
+				handcount = 0 // Reset handcount.
+				fmt.Print("(Re)")
+				d = shuffle(append(d, dd...)) // Reshuffle remaining + discarded cards.
+				dd = make([]string, 0) // Empty discarded.
+			}
 		} else {
 			break
 		}
