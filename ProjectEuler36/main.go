@@ -23,7 +23,7 @@ func rtest(a string) bool {
 
 func main() {
 	var counter int
-	for i := 1; i <=1000000; i++ {
+	for i := 1; i <= 1000000; i++ {
 		a := fmt.Sprintf("%v", i)
 		b := fmt.Sprintf("%b", i)
 		if rtest(a) {
@@ -34,5 +34,5 @@ func main() {
 		}
 	}
 	fmt.Println("The total of all numbers between 1 and 1,000,000 "+
-	"that are palindromic int both base 2 and base 10 is", counter)
+		"that are palindromic in both base 2 and base 10 is", fmt.Sprint(counter)+".")
 }
