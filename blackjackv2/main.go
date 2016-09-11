@@ -17,7 +17,7 @@ var shuffleMe = deck.Deck()
 var d = shuffle(shuffleMe) // d=deck after the shuffle.
 
 type Card struct {
-	card string
+	card  string
 	value int
 }
 
@@ -96,8 +96,12 @@ func handInit() ([]string, int, bool) {
 	x, y = draw()
 	c2 := Card{x, y}
 
-	if strings.Contains(c1.card, "Ace") { highace = true }
-	if strings.Contains(c2.card, "Ace") && highace == true { c2.value = 1 }
+	if strings.Contains(c1.card, "Ace") {
+		highace = true
+	}
+	if strings.Contains(c2.card, "Ace") && highace == true {
+		c2.value = 1
+	}
 
 	hand[0] = c1.card
 	hand[1] = c2.card
@@ -115,10 +119,10 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 		if askYn("Would you like to hit? [Y/n]: ") {
 			nc, nv := draw() // nc=new card; nv=new value.
 			switch {
-			case strings.Contains(nc, "Ace") && t + nv <= 21:
+			case strings.Contains(nc, "Ace") && t+nv <= 21:
 				highace = true
 				t += nv
-			case strings.Contains(nc, "Ace") && t + nv > 21:
+			case strings.Contains(nc, "Ace") && t+nv > 21:
 				t++
 			default:
 				t += nv
@@ -149,6 +153,14 @@ func play(t int, hand []string, highace bool) (int, []string, bool) {
 	return t, hand, highace
 }
 
+func showHand(hand []string) {
+	for i := range hand {
+		fmt.Printf("%d. %s\n", i+1, hand[i])
+	}
+	fmt.Println()
+}
+
+
 func main() {
 	dd := make([]string, 0) // Discarded Deck
 	var handcount int
@@ -156,13 +168,11 @@ func main() {
 		hand, t, highace := handInit()
 
 		fmt.Println("*** Your Hand: ***")
-		for i := range hand {
-			fmt.Printf("%d. %s\n", i+1, hand[i])
-		}
+		showHand(hand)
 
 		fmt.Println("*** Dealer's Hand: ***")
 		dhand, dt, _ := handInit()
-		fmt.Printf("1. %s\n2. (Face Down)\n", dhand[0])
+		fmt.Printf("1. %s\n2. (Face Down)\n\n", dhand[0])
 
 		fmt.Println("Score:", t)
 		if t == 21 {
@@ -171,21 +181,25 @@ func main() {
 			t, hand, highace = play(t, hand, highace)
 		}
 
-		fmt.Println(" - Dealer's second card:", dhand[1], "(for a total of " + fmt.Sprint(dt) + ")")
+		fmt.Println(" - Dealer's second card:", dhand[1], "(for a total of "+fmt.Sprint(dt)+")")
 
 		if t < 21 {
-			for i := 0; dt < 17; i++ {
+			for i := 0; dt < 17; i++ { // TODO: Dealer doesn't have high/low ace assessment. Fix that.
 				nc, nv := draw()
 				dhand = append(dhand, nc)
 				dt += nv
-				fmt.Println(" - Dealer's next card:", dhand[i+2], "( for a total of", dt, ")")
+				fmt.Println(" - Dealer's next card:", dhand[i+2], "(for a total of "+fmt.Sprint(dt)+")")
 			}
 		}
 
 		switch {
+		case dt == 21 && t < 21:
+			fmt.Println("Dealer has blackjack! You Lose. :(")
+			showHand(dhand)
 		case dt == 21:
-			fmt.Printf("Dealer has blackjack!\n1. %s\n2. %s\n", dhand[0], dhand[1])
-		case t > dt && t <= 21 :
+			fmt.Println("Dealer has blackjack!")
+			showHand(dhand)
+		case t > dt && t <= 21:
 			fmt.Println("You Win!")
 		case t < dt && dt <= 21 && len(hand) < 5:
 			fmt.Println("You Lose. :(")
@@ -198,16 +212,11 @@ func main() {
 		}
 
 		fmt.Println("Final hand:")
-		for i := range hand {
-			fmt.Printf("%d. %s\n", i+1, hand[i])
-		}
+		showHand(hand)
 
-		fmt.Println("** Final score:", t)
-		fmt.Print("Dealer's score: ", dt, " (")
-		for i := range dhand {
-			fmt.Printf("%s ", dhand[i])
-		}
-		fmt.Printf(")\n")
+		fmt.Printf("*** Your final score: %d\n\nDealer's final score: %d\n", t, dt)
+		fmt.Println("Dealer's final hand:")
+		showHand(dhand)
 		fmt.Println()
 
 		dd = append(dd, hand...)
@@ -219,7 +228,7 @@ func main() {
 				handcount = 0 // Reset handcount.
 				fmt.Print("(Re)")
 				d = shuffle(append(d, dd...)) // Reshuffle remaining + discarded cards.
-				dd = make([]string, 0) // Empty discarded.
+				dd = make([]string, 0)        // Empty discarded.
 			}
 		} else {
 			break
