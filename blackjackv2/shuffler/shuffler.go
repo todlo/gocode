@@ -17,7 +17,7 @@ func shuffle(s shuffler) {
 	time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < s.Len(); i++ {
-		j := r.Intn(s.Len()-i)
+		j := r.Intn(s.Len() - i)
 		s.Swap(i, j)
 	}
 }
