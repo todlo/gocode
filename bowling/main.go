@@ -10,30 +10,41 @@ import (
 	"fmt"
 )
 
-func main() {
+func bowl(set []int) {
 	var roll1, roll2, score int
 	frame := 1
-	p1scores := []int{5, 3, 6, 4, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
-	fmt.Println("p1scores to process:", p1scores)
+	fmt.Println("scores to process:", set)
 	for frame < 10 {
-		roll1, roll2 = p1scores[0], p1scores[1]
+		fmt.Printf("Frame: %d\n", frame)
+		roll1, roll2 = set[0], set[1]
 		switch {
 		case roll1 + roll2 < 10:
 			score += roll1 + roll2
-			p1scores = p1scores[2:]
+			set = set[2:]
 		case roll1 + roll2 == 10:
-			score += roll1 + roll2 + p1scores[2]
-			p1scores = p1scores[2:]
+			fmt.Println("SPARE!")
+			score += roll1 + roll2 + set[2]
+			set = set[2:]
 		case roll1 == 10:
-			score += 10 + p1scores[1] + p1scores[2]
-			p1scores = p1scores[1:]
+			fmt.Println("S T R I K E !!")
+			score += 10 + set[1] + set[2]
+			set = set[1:]
 		}
-		fmt.Printf("p1scores left: %d\nFrame: %d\nScore: %d\n", p1scores, frame, score)
+		fmt.Printf("Score: %d\n\n", score)
 		frame++
 	}
 	fmt.Println("Frame: 10")
-	for i := range p1scores {
-		score += p1scores[i]
+	for i := range set {
+		score += set[i]
 	}
 	fmt.Println("Final Score:", score)
+}
+
+func main() {
+	p1scores := []int{5, 3, 6, 4, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
+	p2scores := []int{5, 3, 10, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
+	p3scores := []int{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
+	bowl(p1scores)
+	bowl(p2scores)
+	bowl(p3scores)
 }
