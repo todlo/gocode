@@ -66,6 +66,30 @@ func getNames(p int) string {
 	return a
 }
 
+func getFrames(name string) []int {
+	set := make([]int, 21)
+	var index int
+	for i := 0; i < 10; i++ {
+		fmt.Println("Frame", i+1)
+		for j := 1; j <= 2; j++ {
+			fmt.Printf("Please enter %s's score for frame %d, ball %d: ", name, i+1, j)
+			_, err := fmt.Scan(&set[index])
+			if err != nil {
+				fmt.Println(err, "Something went wrong.")
+				getFrames(name)
+			} else if set[index] == 10 {
+				j++
+				index += 2
+				break
+			}
+			index++
+			//fmt.Println(set)
+		}
+	}
+	return set
+}
+
+
 func main() {
 	numplayers := getPlayers()
 	x := make([]string, numplayers)
@@ -73,12 +97,17 @@ func main() {
 	for i := 0; i < numplayers; i++ {
 		x[i] = fmt.Sprintf(getNames(i+1))
 		fmt.Printf("Player %d is %s.\n", i+1, x[i])
+		frames := getFrames(x[i])
+		fmt.Printf("%s's set: %v\n", x[i], frames)
+		fmt.Printf("%s's total:\n", x[i])
+		bowl(frames)
 	}
-	fmt.Println(x[0])
-	p1scores := []int{5, 3, 6, 4, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
+	//p1 := player{fmt.Sprint(x[0])}
+	//fmt.Println(p1.name)
+	//p1scores := []int{5, 3, 6, 4, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
 	//p2scores := []int{5, 3, 10, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
 	//p3scores := []int{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
-	bowl(p1scores)
+	//bowl(p1scores)
 	//bowl(p2scores)
 	//bowl(p3scores)
 }
