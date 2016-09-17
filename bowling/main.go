@@ -73,11 +73,10 @@ func getFrames(name string) []int {
 		fmt.Println("Frame", i+1)
 		for j := 1; j <= 2; j++ {
 			fmt.Printf("Please enter %s's score for frame %d, ball %d: ", name, i+1, j)
-			_, err := fmt.Scan(&set[index])
-			if err != nil {
+			if _, err := fmt.Scan(&set[index]); err != nil {
 				fmt.Println(err, "Something went wrong.")
 				getFrames(name)
-			} else if set[index] == 10 {
+			} else if set[index] == 10 && j == 1 {
 				j++
 				index += 2
 				break
