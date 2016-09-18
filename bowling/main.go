@@ -25,7 +25,7 @@ func bowl(set []int) {
 		case roll1 + roll2 < 10:
 			score += roll1 + roll2
 			set = set[2:]
-		case roll1 + roll2 == 10:
+		case roll1 < 10 && roll1 + roll2 == 10:
 			fmt.Println("SPARE!")
 			score += roll1 + roll2 + set[2]
 			set = set[2:]
@@ -47,8 +47,7 @@ func bowl(set []int) {
 func getPlayers() int {
 	var a int
 	fmt.Print("How many players? [1-8]: ")
-	_, err := fmt.Scan(&a)
-	if err != nil || a < 1 || a > 8 {
+	if _, err := fmt.Scan(&a); err != nil || a < 1 || a > 8 {
 		fmt.Println(fmt.Sprint(err)+": Please pick a number from 1 through 8.")
 		getPlayers()
 	}
@@ -58,8 +57,7 @@ func getPlayers() int {
 func getNames(p int) string {
 	var a string
 	fmt.Printf("What is the name of player %d? ", p)
-	_, err := fmt.Scan(&a)
-	if err != nil {
+	if _, err := fmt.Scan(&a); err != nil {
 		fmt.Println(err, "Something went wrong.")
 		getNames(p)
 	}
@@ -69,20 +67,43 @@ func getNames(p int) string {
 func getFrames(name string) []int {
 	set := make([]int, 21)
 	var index int
-	for i := 0; i < 10; i++ {
+	// Frames 1-9:
+	for i := 0; i < 9; i++ {
 		fmt.Println("Frame", i+1)
 		for j := 1; j <= 2; j++ {
-			fmt.Printf("Please enter %s's score for frame %d, ball %d: ", name, i+1, j)
-			if _, err := fmt.Scan(&set[index]); err != nil {
+			fmt.Printf("Please enter %s's score for frame %d, ball %d [default 0]: ", name, i+1, j)
+			_, err := fmt.Scanln(&set[index])
+			switch {
+			case err != nil && fmt.Sprint(err) != "unexpected newline":
 				fmt.Println(err, "Something went wrong.")
-				getFrames(name)
-			} else if set[index] == 10 && j == 1 {
+				j = 1; i--
+			case set[index] == 10 && j == 1:
 				j++
 				index += 2
 				break
+			case fmt.Sprint(err) == "unexpected newline":
+				fmt.Printf("Setting index %d to 0.\n", set[index])
+				set[index] = 0
+				index++
+			default:
+				index++
 			}
+		}
+	}
+	// Frame 10:
+	fmt.Println("Frame 10")
+	index = 18
+	for j := 1; j <= 3; j++ {
+		fmt.Printf("Please enter %s's score for frame 10, ball %d [default 0]: ", name, j)
+		if _, err := fmt.Scan(&set[index]); err != nil && fmt.Sprint(err) != "unexpected newline" {
+			fmt.Println(err, "Something went wrong.")
+			j = 1
+			index = 18
+		} else if j == 2 && set[18] + set[19] < 10 {
+			j = 3
+			break
+		} else {
 			index++
-			//fmt.Println(set)
 		}
 	}
 	return set
