@@ -27,12 +27,17 @@ func bowl(set []int) {
 			set = set[2:]
 		case roll1 < 10 && roll1 + roll2 == 10:
 			fmt.Println("SPARE!")
+			fmt.Println("DEBUG: set is", set)
 			score += roll1 + roll2 + set[2]
 			set = set[2:]
-		case roll1 == 10:
+		case roll1 == 10 && set[2] < 10:
 			fmt.Println("S T R I K E !!")
 			score += 10 + set[1] + set[2]
-			set = set[1:]
+			set = set[2:]
+		case roll1 == 10 && set[2] == 10:
+			fmt.Println("S T R I K E !!")
+			score += 10 + set[2] + set[4]
+			set = set[2:]
 		}
 		fmt.Printf("Score: %d\n\n", score)
 		frame++
@@ -69,25 +74,29 @@ func getFrames(name string) []int {
 	var index int
 	// Frames 1-9:
 	for i := 0; i < 9; i++ {
-		fmt.Println("Frame", i+1)
 		for j := 1; j <= 2; j++ {
+			fmt.Printf("~~ Frame %d.%d ~~\n", i+1, j)
 			fmt.Printf("Please enter %s's score for frame %d, ball %d [default 0]: ", name, i+1, j)
 			_, err := fmt.Scanln(&set[index])
 			switch {
 			case err != nil && fmt.Sprint(err) != "unexpected newline":
-				fmt.Println(err, "Something went wrong.")
-				j = 1; i--
+				fmt.Println(err, "...backing up.")
+				if j == 1 {
+					j = 0
+				} else {
+					j = 1
+				}
+				continue
 			case set[index] == 10 && j == 1:
 				j++
 				index += 2
 				break
 			case fmt.Sprint(err) == "unexpected newline":
-				fmt.Printf("Setting index %d to 0.\n", set[index])
-				set[index] = 0
 				index++
 			default:
 				index++
 			}
+			fmt.Println(set)
 		}
 	}
 	// Frame 10:
