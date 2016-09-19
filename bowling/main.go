@@ -1,9 +1,8 @@
 // bowling.go adds the player scores from a standard game of US-style
 // bowling (10 frames, 2 rolls per frame to try to knock down 10 pins).
-// Right now it just takes a hardcoded array of single player scores
-// (p1scores == "player one scores"), but the idea is to input scores
-// from as many as 8 players and have them tallied (and then ranked by
-// player).
+// Takes input for up to 8 players, with the user entering the full set 
+// of each player. Player set goes into a []int (slice of ints). Scoring
+// algorithm lives in bowl(), which is called with that []int set. 
 package main
 
 import (
@@ -27,7 +26,6 @@ func bowl(set []int) {
 			set = set[2:]
 		case roll1 < 10 && roll1 + roll2 == 10:
 			fmt.Println("SPARE!")
-			fmt.Println("DEBUG: set is", set)
 			score += roll1 + roll2 + set[2]
 			set = set[2:]
 		case roll1 == 10 && set[2] < 10:
