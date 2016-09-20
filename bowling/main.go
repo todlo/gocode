@@ -30,7 +30,7 @@ func bowl(set []int) {
 			set = set[2:]
 		case roll1 == 10 && set[2] < 10:
 			fmt.Println("S T R I K E !!")
-			score += 10 + set[1] + set[2]
+			score += 10 + set[2] + set[3]
 			set = set[2:]
 		case roll1 == 10 && set[2] == 10:
 			fmt.Println("S T R I K E !!")
@@ -47,21 +47,22 @@ func bowl(set []int) {
 	fmt.Println("Final Score:", score)
 }
 
-func getPlayers() int {
-	var a int
+func getPlayers(a *int) int {
 	fmt.Print("How many players? [1-8]: ")
-	if _, err := fmt.Scan(&a); err != nil || a < 1 || a > 8 {
-		fmt.Println(fmt.Sprint(err)+": Please pick a number from 1 through 8.")
-		getPlayers()
+	if _, e := fmt.Scan(a); e != nil || *a < 1 || *a > 8 {
+		fmt.Println(fmt.Sprint(e)+": Please pick a number from 1 through 8.")
+		getPlayers(a)
 	}
-	return a
+	fmt.Println("DEBUG: *a is", *a)
+	fmt.Println("DEBUG: a is", a)
+	return *a
 }
 
 func getNames(p int) string {
 	var a string
 	fmt.Printf("What is the name of player %d? ", p)
-	if _, err := fmt.Scan(&a); err != nil {
-		fmt.Println(err, "Something went wrong.")
+	if _, e := fmt.Scanln(&a); e != nil {
+		fmt.Println(e, "Something went wrong.")
 		getNames(p)
 	}
 	return a
@@ -75,10 +76,10 @@ func getFrames(name string) []int {
 		for j := 1; j <= 2; j++ {
 			fmt.Printf("~~ Frame %d.%d ~~\n", i+1, j)
 			fmt.Printf("Please enter %s's score for frame %d, ball %d [default 0]: ", name, i+1, j)
-			_, err := fmt.Scanln(&set[index])
+			_, e := fmt.Scanln(&set[index])
 			switch {
-			case err != nil && fmt.Sprint(err) != "unexpected newline":
-				fmt.Println(err, "...backing up.")
+			case e != nil && fmt.Sprint(e) != "unexpected newline":
+				fmt.Println(e, "...backing up.")
 				if j == 1 {
 					j = 0
 				} else {
@@ -89,7 +90,7 @@ func getFrames(name string) []int {
 				j++
 				index += 2
 				break
-			case fmt.Sprint(err) == "unexpected newline":
+			case fmt.Sprint(e) == "unexpected newline":
 				index++
 			default:
 				index++
@@ -118,7 +119,8 @@ func getFrames(name string) []int {
 
 
 func main() {
-	numplayers := getPlayers()
+	var a int
+	numplayers := getPlayers(&a)
 	x := make([]string, numplayers)
 	fmt.Printf("You entered %d players.\n", numplayers)
 	for i := 0; i < numplayers; i++ {
