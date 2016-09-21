@@ -53,8 +53,6 @@ func getPlayers(a *int) int {
 		fmt.Println(fmt.Sprint(e)+": Please pick a number from 1 through 8.")
 		getPlayers(a)
 	}
-	fmt.Println("DEBUG: *a is", *a)
-	fmt.Println("DEBUG: a is", a)
 	return *a
 }
 
@@ -75,9 +73,11 @@ func getFrames(name string) []int {
 	for i := 0; i < 9; i++ {
 		for j := 1; j <= 2; j++ {
 			fmt.Printf("~~ Frame %d.%d ~~\n", i+1, j)
-			fmt.Printf("Please enter %s's score for frame %d, ball %d [default 0]: ", name, i+1, j)
+			fmt.Printf("Please enter %s's score (0-10) for frame %d, ball %d [default 0]: ", name, i+1, j)
 			_, e := fmt.Scanln(&set[index])
 			switch {
+			case fmt.Sprint(e) == "unexpected newline":
+				index++
 			case e != nil && fmt.Sprint(e) != "unexpected newline":
 				fmt.Println(e, "...backing up.")
 				if j == 1 {
@@ -86,12 +86,18 @@ func getFrames(name string) []int {
 					j = 1
 				}
 				continue
+			case j == 1 && set[index] > 10:
+				fmt.Println("There are only 10 pins! Please enter a number from 0 through 10")
+				j = 0; set[index] = 0
+				continue
+			case j == 2 && set[index] > 10-set[index-1]:
+				fmt.Printf("There are only %d pins left! Please enter a number from 0 through %d.\n", 10-set[index-1], 10-set[index-1])
+				j = 1; set[index] = 0
+				continue
 			case set[index] == 10 && j == 1:
 				j++
 				index += 2
 				break
-			case fmt.Sprint(e) == "unexpected newline":
-				index++
 			default:
 				index++
 			}
@@ -103,7 +109,7 @@ func getFrames(name string) []int {
 	index = 18
 	for j := 1; j <= 3; j++ {
 		fmt.Printf("Please enter %s's score for frame 10, ball %d [default 0]: ", name, j)
-		if _, err := fmt.Scan(&set[index]); err != nil && fmt.Sprint(err) != "unexpected newline" {
+		if _, err := fmt.Scanln(&set[index]); err != nil && fmt.Sprint(err) != "unexpected newline" {
 			fmt.Println(err, "Something went wrong.")
 			j = 1
 			index = 18
