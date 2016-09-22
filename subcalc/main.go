@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -23,4 +24,9 @@ func main() {
 	address = append(address, sub)
 
 	fmt.Println(address)
+	for x := range address {
+		i, _ := strconv.Atoi(address[x])
+		fmt.Printf("%d ", i)
+	}
+	fmt.Println()
 }
