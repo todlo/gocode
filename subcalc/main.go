@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -21,7 +22,17 @@ func main() {
 		a = a[strings.Index(a, ".")+1:]
 	}
 	address[3] = a
-	address = append(address, sub)
+
+	s, _ := strconv.Atoi(sub)
+	switch {
+	case s < 31:
+		usable := math.Pow(2, float64(32-s))-2
+		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
+	case s == 31:
+		fmt.Printf("This is a point-to-point address, the other end being %s.\n")
+	default:
+		fmt.Println("/32 (255.255.255.255) is a device address; nothing to calculate!")
+	}
 
 	fmt.Println(address)
 	for x := range address {
