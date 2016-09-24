@@ -13,7 +13,10 @@ import (
 
 func binMe(x int) int {
 	b := strings.Replace("00000000", "0", "1", x)
-	bin, _ := strconv.ParseInt(b, 2, 32)
+	bin, e := strconv.ParseInt(b, 2, 32)
+	if e != nil {
+		fmt.Println("Something went wrong:", e)
+	}
 	return int(bin)
 }
 
@@ -53,8 +56,6 @@ func main() {
 		s1, s2, s3 = 255, 255, 255
 		if s%8 > 0 { s4 = binMe(s%8) }
 	}
-
-	fmt.Println(strconv.ParseInt("11110000", 2, 32))
 
 	switch {
 	case s < 31:
