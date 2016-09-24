@@ -40,10 +40,22 @@ func main() {
 		fmt.Println("Something went wrong:", e)
 		os.Exit(1)
 	}
-	n, _ = strconv.Atoi(address[1])
-	t, _ = strconv.Atoi(address[2])
-	l, _ = strconv.Atoi(address[3])
-	s, _ = strconv.Atoi(sub)
+	if n, e = strconv.Atoi(address[1]); e != nil {
+		fmt.Println("Something went wrong:", e)
+		os.Exit(1)
+	}
+	if t, e = strconv.Atoi(address[2]); e != nil {
+		fmt.Println("Something went wrong:", e)
+		os.Exit(1)
+	}
+	if l, e = strconv.Atoi(address[3]); e != nil {
+		fmt.Println("Something went wrong:", e)
+		os.Exit(1)
+	}
+	if s, e = strconv.Atoi(sub); e != nil {
+		fmt.Println("Something went wrong:", e)
+		os.Exit(1)
+	}
 
 	switch s/8 {
 	case 1:
