@@ -11,6 +11,13 @@ import (
 	"strings"
 )
 
+func binMe(x int) int {
+	b := strings.Replace("00000000", "0", "1", x)
+	bin, _ := strconv.ParseInt(b, 2, 32)
+	return int(bin)
+}
+
+
 func main() {
 	address := make([]string, 4)
 	var a string
@@ -23,7 +30,8 @@ func main() {
 		a = a[strings.Index(a, ".")+1:]
 	}
 	address[3] = a
-	var f, n, t, l, s int // First, Next, Third, Last octets + sub
+	var f, n, t, l, s int // First, Next, Third, Last octets + Sub
+	var s1, s2, s3, s4 int // Subnet octets
 	var e error
 	if f, e = strconv.Atoi(address[0]); e != nil {
 		fmt.Println("Something went wrong:", e)
@@ -33,6 +41,20 @@ func main() {
 	t, _ = strconv.Atoi(address[2])
 	l, _ = strconv.Atoi(address[3])
 	s, _ = strconv.Atoi(sub)
+
+	switch s/8 {
+	case 1:
+		s1 = 255
+		if s%8 > 0 { s2 = binMe(s%8) }
+	case 2:
+		s1, s2 = 255, 255
+		if s%8 > 0 { s3 = binMe(s%8) }
+	case 3:
+		s1, s2, s3 = 255, 255, 255
+		if s%8 > 0 { s4 = binMe(s%8) }
+	}
+
+	fmt.Println(strconv.ParseInt("11110000", 2, 32))
 
 	switch {
 	case s < 31:
@@ -50,4 +72,7 @@ func main() {
 	default:
 		fmt.Println("/32 (255.255.255.255) is a device address; nothing to calculate!")
 	}
+
+	fmt.Printf("Address:   %d.%d.%d.%d\t%b.%b.%b.%b\n", f, n, t, l, f, n, t, l)
+	fmt.Printf("Netmask:   %d.%d.%d.%d = %d\t%b.%b.%b.%b\n", s1, s2, s3, s4, s, s1, s2, s3, s4)
 }
