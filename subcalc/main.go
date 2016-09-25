@@ -20,6 +20,16 @@ func binMe(x int) int {
 	return int(bin)
 }
 
+func intMe(x string) int {
+	var i int
+	var e error
+	if i, e = strconv.Atoi(x); e != nil {
+		fmt.Println("Something went wrong:", e)
+		os.Exit(1)
+	}
+	return i
+}
+
 
 func main() {
 	address := make([]string, 4)
@@ -33,29 +43,9 @@ func main() {
 		a = a[strings.Index(a, ".")+1:]
 	}
 	address[3] = a
-	var f, n, t, l, s int // First, Next, Third, Last octets + Sub
 	var s1, s2, s3, s4 int // Subnet octets
-	var e error
-	if f, e = strconv.Atoi(address[0]); e != nil {
-		fmt.Println("Something went wrong:", e)
-		os.Exit(1)
-	}
-	if n, e = strconv.Atoi(address[1]); e != nil {
-		fmt.Println("Something went wrong:", e)
-		os.Exit(1)
-	}
-	if t, e = strconv.Atoi(address[2]); e != nil {
-		fmt.Println("Something went wrong:", e)
-		os.Exit(1)
-	}
-	if l, e = strconv.Atoi(address[3]); e != nil {
-		fmt.Println("Something went wrong:", e)
-		os.Exit(1)
-	}
-	if s, e = strconv.Atoi(sub); e != nil {
-		fmt.Println("Something went wrong:", e)
-		os.Exit(1)
-	}
+	// First, Next, Third, Last octets + Sub
+	f, n, t, l, s := intMe(address[0]), intMe(address[1]), intMe(address[2]), intMe(address[3]), intMe(sub)
 
 	switch s/8 {
 	case 1:
