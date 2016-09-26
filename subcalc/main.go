@@ -30,6 +30,27 @@ func intMe(x string) int {
 	return i
 }
 
+func findMe(x, y int) (int, int) {
+	count := 8-y
+	fmt.Println("DEBUG: count is", count)
+	var i, min, max int
+	for i = 256; count > 0; {
+		i = i/2; count--
+	}
+	for j := 0; j < 256; {
+		fmt.Println("DEBUG: i is", i)
+		fmt.Println("DEBUG: j is", j)
+		if x > j {
+			j = j+i
+		} else {
+			max = j-1
+			min = j-i+1
+			break
+		}
+	}
+	fmt.Println("DEBUG: min is", min, "max is", max)
+	return min, max
+}
 
 func main() {
 	address := make([]string, 4)
@@ -60,6 +81,9 @@ func main() {
 	}
 
 	switch {
+	case s > 24 && s < 31:
+		min, max := findMe(l, 32-s)
+		fmt.Printf("Min: %v\tMax: %v\n", min, max)
 	case s < 31:
 		usable := math.Pow(2, float64(32-s))-2
 		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
