@@ -88,7 +88,7 @@ func getFrames(name string) []int {
 				continue
 			case j == 1 && set[index] > 10:
 				fmt.Println("There are only 10 pins! Please enter a number from 0 through 10")
-				j = 0; set[index] = 0
+				j = 0; set[index] = 0 // have to set[index] back to 0, otherwise set keeps wrong number.
 				continue
 			case j == 2 && set[index] > 10-set[index-1]:
 				fmt.Printf("There are only %d pins left! Please enter a number from 0 through %d.\n", 10-set[index-1], 10-set[index-1])
