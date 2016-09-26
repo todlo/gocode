@@ -32,14 +32,11 @@ func intMe(x string) int {
 
 func findMe(x, y int) (int, int) {
 	count := 8-y
-	fmt.Println("DEBUG: count is", count)
 	var i, min, max int
 	for i = 256; count > 0; {
 		i = i/2; count--
 	}
-	for j := 0; j < 256; {
-		fmt.Println("DEBUG: i is", i)
-		fmt.Println("DEBUG: j is", j)
+	for j := 0; j <= 256; {
 		if x > j {
 			j = j+i
 		} else {
