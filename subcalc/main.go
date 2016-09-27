@@ -41,11 +41,10 @@ func findMe(x, y int) (int, int) {
 			j = j+i
 		} else {
 			max = j-1
-			min = j-i+1
+			min = j-i
 			break
 		}
 	}
-	fmt.Println("DEBUG: min is", min, "max is", max)
 	return min, max
 }
 
@@ -77,12 +76,14 @@ func main() {
 		if s%8 > 0 { s4 = binMe(s%8) }
 	}
 
+	var min, max int
+	usable := math.Pow(2, float64(32-s))-2
 	switch {
 	case s > 24 && s < 31:
-		min, max := findMe(l, 32-s)
+		min, max = findMe(l, 32-s)
 		fmt.Printf("Min: %v\tMax: %v\n", min, max)
+		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
 	case s < 31:
-		usable := math.Pow(2, float64(32-s))-2
 		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
 	case s == 31:
 		var o int // other end
@@ -99,4 +100,8 @@ func main() {
 
 	fmt.Printf("Address:   %d.%d.%d.%d\t%b.%b.%b.%b\n", f, n, t, l, f, n, t, l)
 	fmt.Printf("Netmask:   %d.%d.%d.%d = %d\t%b.%b.%b.%b\n", s1, s2, s3, s4, s, s1, s2, s3, s4)
+	fmt.Printf("HostMin:   %d.%d.%d.%d\n", f, n, t, min+1)
+	fmt.Printf("HostMax:   %d.%d.%d.%d\n", f, n, t, max-1)
+	fmt.Printf("Broadcast: %d.%d.%d.%d\n", f, n, t, max)
+	fmt.Printf("Hosts/Net: %v\n", usable)
 }
