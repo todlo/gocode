@@ -16,6 +16,7 @@ func binMe(x int) int {
 	bin, e := strconv.ParseInt(b, 2, 32)
 	if e != nil {
 		fmt.Println("Something went wrong:", e)
+		os.Exit(1)
 	}
 	return int(bin)
 }
@@ -51,6 +52,7 @@ func findMe(x, y int) (int, int) {
 func main() {
 	address := make([]string, 4)
 	var a string
+
 	fmt.Print("Enter v4 address with subnet (e.g., 1.2.3.4/24): ")
 	fmt.Scanln(&a)
 	sub := a[strings.Index(a, "/")+1:]
@@ -60,11 +62,14 @@ func main() {
 		a = a[strings.Index(a, ".")+1:]
 	}
 	address[3] = a
+
 	var s1, s2, s3, s4 int // Subnet octets
 	// First, Next, Third, Last octets + Sub
 	f, n, t, l, s := intMe(address[0]), intMe(address[1]), intMe(address[2]), intMe(address[3]), intMe(sub)
 
 	switch s/8 {
+	case 0:
+		s1 = binMe(s)
 	case 1:
 		s1 = 255
 		if s%8 > 0 { s2 = binMe(s%8) }
@@ -79,10 +84,9 @@ func main() {
 	var min, max int
 	usable := math.Pow(2, float64(32-s))-2
 	switch {
-	case s > 24 && s < 31:
+	case s >= 24 && s < 31:
 		min, max = findMe(l, 32-s)
 		fmt.Printf("Min: %v\tMax: %v\n", min, max)
-		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
 	case s < 31:
 		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
 	case s == 31:
