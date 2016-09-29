@@ -13,7 +13,7 @@ import (
 
 func binMe(x int) int {
 	b := strings.Replace("00000000", "0", "1", x)
-	bin, e := strconv.ParseInt(b, 2, 32)
+	bin, e := strconv.ParseInt(b, 2, 0)
 	if e != nil {
 		fmt.Println("Something went wrong:", e)
 		os.Exit(1)
@@ -86,7 +86,6 @@ func main() {
 	switch {
 	case s >= 24 && s < 31:
 		min, max = findMe(l, 32-s)
-		fmt.Printf("Min: %v\tMax: %v\n", min, max)
 	case s < 31:
 		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
 	case s == 31:
@@ -102,10 +101,10 @@ func main() {
 		fmt.Println("/32 (255.255.255.255) is a device address; nothing to calculate!")
 	}
 
-	fmt.Printf("Address:   %d.%d.%d.%d\t%b.%b.%b.%b\n", f, n, t, l, f, n, t, l)
+	fmt.Printf("Address:   %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, l, f, n, t, l)
 	fmt.Printf("Netmask:   %d.%d.%d.%d = %d\t%b.%b.%b.%b\n", s1, s2, s3, s4, s, s1, s2, s3, s4)
-	fmt.Printf("HostMin:   %d.%d.%d.%d\n", f, n, t, min+1)
-	fmt.Printf("HostMax:   %d.%d.%d.%d\n", f, n, t, max-1)
-	fmt.Printf("Broadcast: %d.%d.%d.%d\n", f, n, t, max)
-	fmt.Printf("Hosts/Net: %v\n", usable)
+	fmt.Printf("HostMin:   %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, min+1, f, n, t, min+1)
+	fmt.Printf("HostMax:   %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, max-1, f, n, t, max-1)
+	fmt.Printf("Broadcast: %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, max, f, n, t, max)
+	fmt.Printf("Hosts/Net: %v\n\n", usable)
 }
