@@ -49,6 +49,12 @@ func findMe(x, y int) (int, int) {
 	return min, max
 }
 
+func minmax(f, n, t, l int) (string, string) {
+	a := fmt.Sprintf("%d.%d.%d.%d", f, n, t, l)
+	b := fmt.Sprintf("%08b.%08b.%08b.%08b", f, n, t, l)
+	return a, b
+}
+
 func main() {
 	address := make([]string, 4)
 	var a string
@@ -81,11 +87,19 @@ func main() {
 		if s%8 > 0 { s4 = binMe(s%8) }
 	}
 
-	var min, max int
+	var tmin, tmax, min, max int
+	var hostmin, hostminb, hostmax, hostmaxb string
 	usable := math.Pow(2, float64(32-s))-2
 	switch {
 	case s >= 24 && s < 31:
 		min, max = findMe(l, 32-s)
+		hostmin, hostminb = minmax(f, n, t, min+1)
+		hostmax, hostmaxb = minmax(f, n, t, max-1)
+	case s >= 16 && s < 24:
+		min, max = findMe(l, 8)
+		tmin, tmax = findMe(t, 24-s)
+		hostmin, hostminb = minmax(f, n, tmin, min+1)
+		hostmax, hostmaxb = minmax(f, n, tmax, max-1)
 	case s < 31:
 		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
 	case s == 31:
@@ -101,10 +115,10 @@ func main() {
 		fmt.Println("/32 (255.255.255.255) is a device address; nothing to calculate!")
 	}
 
-	fmt.Printf("Address:   %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, l, f, n, t, l)
+	fmt.Printf("Address:   %d.%d.%d.%d     \t%08b.%08b.%08b.%08b\n", f, n, t, l, f, n, t, l)
 	fmt.Printf("Netmask:   %d.%d.%d.%d = %d\t%b.%b.%b.%b\n", s1, s2, s3, s4, s, s1, s2, s3, s4)
-	fmt.Printf("HostMin:   %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, min+1, f, n, t, min+1)
-	fmt.Printf("HostMax:   %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, max-1, f, n, t, max-1)
-	fmt.Printf("Broadcast: %d.%d.%d.%d    \t%08b.%08b.%08b.%08b\n", f, n, t, max, f, n, t, max)
+	fmt.Printf("HostMin:   %s\t\t%s\n", hostmin, hostminb)
+	fmt.Printf("HostMax:   %s\t\t%s\n", hostmax, hostmaxb)
+	fmt.Printf("Broadcast: %d.%d.%d.%d     \t%08b.%08b.%08b.%08b\n", f, n, t, max, f, n, t, max)
 	fmt.Printf("Hosts/Net: %v\n\n", usable)
 }
