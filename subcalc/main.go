@@ -87,7 +87,7 @@ func main() {
 		if s%8 > 0 { s4 = binMe(s%8) }
 	}
 
-	var tmin, tmax, min, max int
+	var nmin, nmax, tmin, tmax, min, max int
 	var hostmin, hostminb, hostmax, hostmaxb string
 	usable := math.Pow(2, float64(32-s))-2
 	switch {
@@ -100,8 +100,12 @@ func main() {
 		tmin, tmax = findMe(t, 24-s)
 		hostmin, hostminb = minmax(f, n, tmin, min+1)
 		hostmax, hostmaxb = minmax(f, n, tmax, max-1)
-	case s < 31:
-		fmt.Printf("There are %v usable addresses in a /%d subnet.\n", usable, s)
+	case s >= 8 && s < 16:
+		min, max = findMe(l, 8)
+		tmin, tmax = findMe(t, 8)
+		nmin, nmax = findMe(n, 16-s)
+		hostmin, hostminb = minmax(f, nmin+2, tmin, min+1)
+		hostmax, hostmaxb = minmax(f, nmax+2, tmax, max-1)
 	case s == 31:
 		var o int // other end
 		if l%2 == 0 {
