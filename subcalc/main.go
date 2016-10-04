@@ -38,7 +38,9 @@ func findMe(x, y int) (int, int) {
 		i = i/2; count--
 	}
 	for j := 0; j <= 256; {
-		if x > j {
+		if x >= j {
+			//fmt.Println("DEBUG: j is", j)
+			//fmt.Println("DEBUG: x is", x)
 			j = j+i
 		} else {
 			max = j-1
@@ -73,49 +75,40 @@ func main() {
 	// First, Next, Third, Last octets + Sub
 	f, n, t, l, s := intMe(address[0]), intMe(address[1]), intMe(address[2]), intMe(address[3]), intMe(sub)
 
+	var nmin, nmax, tmin, tmax, min, max int
+	var hostmin, hostminb, hostmax, hostmaxb string
+	usable := math.Pow(2, float64(32-s))-2
+
 	switch s/8 {
 	case 0:
 		s1 = binMe(s)
 	case 1:
 		s1 = 255
 		if s%8 > 0 { s2 = binMe(s%8) }
-	case 2:
-		s1, s2 = 255, 255
-		if s%8 > 0 { s3 = binMe(s%8) }
-	case 3:
-		s1, s2, s3 = 255, 255, 255
-		if s%8 > 0 { s4 = binMe(s%8) }
-	}
-
-	var nmin, nmax, tmin, tmax, min, max int
-	var hostmin, hostminb, hostmax, hostmaxb string
-	usable := math.Pow(2, float64(32-s))-2
-	switch {
-	case s >= 24 && s < 31:
-		min, max = findMe(l, 32-s)
-		hostmin, hostminb = minmax(f, n, t, min+1)
-		hostmax, hostmaxb = minmax(f, n, t, max-1)
-	case s >= 16 && s < 24:
-		min, max = findMe(l, 8)
-		tmin, tmax = findMe(t, 24-s)
-		hostmin, hostminb = minmax(f, n, tmin, min+1)
-		hostmax, hostmaxb = minmax(f, n, tmax, max-1)
-	case s >= 8 && s < 16:
 		min, max = findMe(l, 8)
 		tmin, tmax = findMe(t, 8)
 		nmin, nmax = findMe(n, 16-s)
 		hostmin, hostminb = minmax(f, nmin+2, tmin, min+1)
 		hostmax, hostmaxb = minmax(f, nmax+2, tmax, max-1)
-	case s == 31:
-		var o int // other end
-		if l%2 == 0 {
-			o = l+1
+	case 2:
+		s1, s2 = 255, 255
+		if s%8 > 0 { s3 = binMe(s%8) }
+		min, max = findMe(l, 8)
+		tmin, tmax = findMe(t, 24-s)
+		hostmin, hostminb = minmax(f, n, tmin, min+1)
+		hostmax, hostmaxb = minmax(f, n, tmax, max-1)
+	case 3:
+		s1, s2, s3 = 255, 255, 255
+		if s%8 > 0 { s4 = binMe(s%8) }
+		min, max = findMe(l, 32-s)
+		if s == 31 {
+			hostmin, hostminb = minmax(f, n, t, min)
+			hostmax, hostmaxb = minmax(f, n, t, max)
 		} else {
-			o = l-1
+			hostmin, hostminb = minmax(f, n, t, min+1)
+			hostmax, hostmaxb = minmax(f, n, t, max-1)
 		}
-		fmt.Printf("This is a point-to-point link (RFC 3021), "+
-			"the other end being %d.%d.%d.%d/%d.\n", f, n, t, o, s)
-	default:
+	case 4:
 		fmt.Println("/32 (255.255.255.255) is a device address; nothing to calculate!")
 	}
 
