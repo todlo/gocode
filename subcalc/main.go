@@ -11,6 +11,21 @@ import (
 	"strings"
 )
 
+func getAddr() ([]string, string) {
+	address := make([]string, 4)
+	var a string
+	fmt.Print("Enter v4 address with subnet (e.g., 1.2.3.4/24): ")
+	fmt.Scanln(&a)
+	sub := a[strings.Index(a, "/")+1:]
+	a = a[:strings.Index(a, "/")]
+	for i := 0; i < 3; i++ {
+		address[i] = a[:strings.Index(a, ".")]
+		a = a[strings.Index(a, ".")+1:]
+	}
+	address[3] = a
+	return address, sub
+}
+
 func binMe(x int) int {
 	b := strings.Replace("00000000", "0", "1", x)
 	bin, e := strconv.ParseInt(b, 2, 0)
@@ -58,18 +73,8 @@ func minmax(f, n, t, l int) (string, string) {
 }
 
 func main() {
-	address := make([]string, 4)
-	var a string
-
-	fmt.Print("Enter v4 address with subnet (e.g., 1.2.3.4/24): ")
-	fmt.Scanln(&a)
-	sub := a[strings.Index(a, "/")+1:]
-	a = a[:strings.Index(a, "/")]
-	for i := 0; i < 3; i++ {
-		address[i] = a[:strings.Index(a, ".")]
-		a = a[strings.Index(a, ".")+1:]
-	}
-	address[3] = a
+	//address := make([]string, 4)
+	address, sub := getAddr()
 
 	var s1, s2, s3, s4 int // Subnet octets
 	// First, Next, Third, Last octets + Sub
