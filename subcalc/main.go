@@ -64,7 +64,7 @@ func findMe(x, y int) (int, int) {
 	return min, max
 }
 
-func minmax(f, n, t, l int) (string, string) {
+func recomp(f, n, t, l int) (string, string) {
 	a := fmt.Sprintf("%d.%d.%d.%d", f, n, t, l)
 	b := fmt.Sprintf("%08b.%08b.%08b.%08b", f, n, t, l)
 	return a, b
@@ -90,33 +90,33 @@ func main() {
 		min, max = findMe(l, 8)
 		tmin, tmax = findMe(t, 8)
 		nmin, nmax = findMe(n, 16-s)
-		hostmin, hostminb = minmax(f, nmin, tmin, min+1)
-		hostmax, hostmaxb = minmax(f, nmax, tmax, max-1)
-		network, networkb = minmax(f, nmin, tmin, min)
-		bcast, bcastb = minmax(f, nmax, tmax, max)
+		hostmin, hostminb = recomp(f, nmin, tmin, min+1)
+		hostmax, hostmaxb = recomp(f, nmax, tmax, max-1)
+		network, networkb = recomp(f, nmin, tmin, min)
+		bcast, bcastb = recomp(f, nmax, tmax, max)
 	case 2:
 		s1, s2 = 255, 255
 		if s%8 > 0 { s3 = binMe(s%8) }
 		min, max = findMe(l, 8)
 		tmin, tmax = findMe(t, 24-s)
-		hostmin, hostminb = minmax(f, n, tmin, min+1)
-		hostmax, hostmaxb = minmax(f, n, tmax, max-1)
-		network, networkb = minmax(f, n, tmin, min)
-		bcast, bcastb = minmax(f, n, tmax, max)
+		hostmin, hostminb = recomp(f, n, tmin, min+1)
+		hostmax, hostmaxb = recomp(f, n, tmax, max-1)
+		network, networkb = recomp(f, n, tmin, min)
+		bcast, bcastb = recomp(f, n, tmax, max)
 	case 3:
 		s1, s2, s3 = 255, 255, 255
 		if s%8 > 0 { s4 = binMe(s%8) }
 		min, max = findMe(l, 32-s)
 		if s == 31 {
-			hostmin, hostminb = minmax(f, n, t, min)
-			hostmax, hostmaxb = minmax(f, n, t, max)
+			hostmin, hostminb = recomp(f, n, t, min)
+			hostmax, hostmaxb = recomp(f, n, t, max)
 			network, networkb = hostmin, hostminb
 			bcast, bcastb = hostmax, hostmaxb
 		} else {
-			hostmin, hostminb = minmax(f, n, t, min+1)
-			hostmax, hostmaxb = minmax(f, n, t, max-1)
-			network, networkb = minmax(f, n, t, min)
-			bcast, bcastb = minmax(f, n, t, max)
+			hostmin, hostminb = recomp(f, n, t, min+1)
+			hostmax, hostmaxb = recomp(f, n, t, max-1)
+			network, networkb = recomp(f, n, t, min)
+			bcast, bcastb = recomp(f, n, t, max)
 		}
 	case 4:
 		fmt.Println("/32 (255.255.255.255) is a device address; nothing to calculate!")
