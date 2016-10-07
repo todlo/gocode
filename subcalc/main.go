@@ -11,11 +11,12 @@ import (
 	"strings"
 )
 
-func getAddr() ([]string, string) {
+func getAddr(a string) ([]string, string) {
 	address := make([]string, 4)
-	var a string
-	fmt.Print("Enter v4 address with subnet (e.g., 1.2.3.4/24): ")
-	fmt.Scanln(&a)
+	if a == "" {
+		fmt.Print("Enter v4 address with subnet (e.g., 1.2.3.4/24): ")
+		fmt.Scanln(&a)
+	}
 	sub := a[strings.Index(a, "/")+1:]
 	a = a[:strings.Index(a, "/")]
 	for i := 0; i < 3; i++ {
@@ -71,7 +72,13 @@ func recomp(f, n, t, l int) (string, string) {
 }
 
 func main() {
-	address, sub := getAddr()
+	var address []string
+	var sub string
+	if len(os.Args) == 2 {
+		address, sub = getAddr(os.Args[1])
+	} else {
+		address, sub = getAddr("")
+	}
 
 	var s1, s2, s3, s4 int // Subnet octets
 	// First, Next, Third, Last octets + Sub
