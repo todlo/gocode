@@ -9,7 +9,7 @@ import "fmt"
 
 func main() {
 	var count int
-	for i := 2; i <= 10000; i++ {
+	for i := 2; ; i++ {
 		for j := 1; j <= i; j++ {
 			if i%j == 0 {
 				count++
