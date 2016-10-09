@@ -17,6 +17,7 @@ func main() {
 		for j := 1; j <= i; j++ {
 			if i%j == 0 {
 				count++
+				if count > 2 { break }
 			}
 		}
 		if count <= 2 {
