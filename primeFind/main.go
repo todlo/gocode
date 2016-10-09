@@ -5,11 +5,15 @@
 // Author: Todd S.
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
+	start := time.Now().UnixNano()
 	var count int
-	for i := 2; ; i++ {
+	for i := 2; i <= 10000; i++ {
 		for j := 1; j <= i; j++ {
 			if i%j == 0 {
 				count++
@@ -20,4 +24,6 @@ func main() {
 		}
 		count = 0
 	}
+	stop := time.Now().UnixNano()
+	fmt.Println("Total runtime (in nanoseconds):", stop - start)
 }
