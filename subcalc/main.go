@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"text/tabwriter"
 )
 
 func getAddr(a string) ([]string, string) {
@@ -129,12 +130,14 @@ func main() {
 		fmt.Println("/32 (255.255.255.255) is a device address; nothing to calculate!")
 	}
 
-	fmt.Printf("Address:   %d.%d.%d.%d     \t%08b.%08b.%08b.%08b\n", f, n, t, l, f, n, t, l)
-	fmt.Printf("Netmask:   %d.%d.%d.%d = %d\t%b.%b.%b.%b\n", s1, s2, s3, s4, s, s1, s2, s3, s4)
-	fmt.Println("=>")
-	fmt.Printf("Network:   %s/%d\t\t%s\n", network, s, networkb)
-	fmt.Printf("HostMin:   %s\t\t%s\n", hostmin, hostminb)
-	fmt.Printf("HostMax:   %s\t\t%s\n", hostmax, hostmaxb)
-	fmt.Printf("Broadcast: %s\t\t%s\n", bcast, bcastb)
-	fmt.Printf("Hosts/Net: %v\n\n", int(usable))
+	w := new(tabwriter.Writer)
+	w.Init(os.Stdout, 8, 8, 8, ' ', 0)
+	fmt.Fprintf(w, "Address:   %d.%d.%d.%d\t%08b.%08b.%08b.%08b\n", f, n, t, l, f, n, t, l)
+	fmt.Fprintf(w, "Netmask:   %d.%d.%d.%d = %d\t%b.%b.%b.%b\n", s1, s2, s3, s4, s, s1, s2, s3, s4)
+	fmt.Fprintf(w, "Network:   %s/%d\t%s\n", network, s, networkb)
+	fmt.Fprintf(w, "HostMin:   %s\t%s\n", hostmin, hostminb)
+	fmt.Fprintf(w, "HostMax:   %s\t%s\n", hostmax, hostmaxb)
+	fmt.Fprintf(w, "Broadcast: %s\t%s\n", bcast, bcastb)
+	fmt.Fprintf(w, "Hosts/Net: %v\n\n", int(usable))
+	w.Flush()
 }
