@@ -6,6 +6,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"text/tabwriter"
 )
 
 func main() {
@@ -30,13 +31,17 @@ func main() {
 		_, v := wordmap[words[i]]
 		if v {
 			wordmap[words[i]] = wordmap[words[i]]+1
-			fmt.Println("DEBUG: found key, value:", words[i], wordmap[words[i]])
+			fmt.Println("DEBUG: found existing key, value:", words[i], wordmap[words[i]])
 		} else {
 			wordmap[words[i]] = 1
 			fmt.Println("DEBUG: new key detected. adding key, value:", words[i], wordmap[words[i]])
 		}
 	}
+
+	w := new(tabwriter.Writer)
+	w.Init(os.Stdout, 0, 0, 3, ' ', 0)
 	for k, v := range wordmap {
-		fmt.Println(k, v)
+		fmt.Fprintf(w, "%v\t%d\n", k, v)
 	}
+	w.Flush()
 }
