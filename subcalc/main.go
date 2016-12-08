@@ -132,8 +132,8 @@ func main() {
 
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 8, 8, 8, ' ', 0)
-	fmt.Fprintf(w, "Address:   %d.%d.%d.%d\t%08b.%08b.%08b.%08b\n", f, n, t, l, f, n, t, l)
-	fmt.Fprintf(w, "Netmask:   %d.%d.%d.%d = %d\t%b.%b.%b.%b\n", s1, s2, s3, s4, s, s1, s2, s3, s4)
+	fmt.Fprintf(w, "Address:   %d.%d.%d.%d\t%08[1]b.%08[2]b.%08[3]b.%08[4]b\n", f, n, t, l)
+	fmt.Fprintf(w, "Netmask:   %d.%d.%d.%d = %d\t%[1]b.%[2]b.%[3]b.%[4]b\n", s1, s2, s3, s4, s)
 	fmt.Fprintf(w, "Network:   %s/%d\t%s\n", network, s, networkb)
 	fmt.Fprintf(w, "HostMin:   %s\t%s\n", hostmin, hostminb)
 	fmt.Fprintf(w, "HostMax:   %s\t%s\n", hostmax, hostmaxb)
