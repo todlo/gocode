@@ -13,11 +13,11 @@ import (
 func main() {
 	start := time.Now().UnixNano()
 	var count int
-	for i := 2; i <= 10000; i++ {
+	for i := 2; i <= 100000; i++ {
 		for j := 1; j <= i; j++ {
 			if i%j == 0 {
 				count++
-				if count > 2 { break }
+				if count > 2 { break } // the performance booster \m/
 			}
 		}
 		if count <= 2 {
