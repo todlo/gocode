@@ -10,13 +10,14 @@ import (
 )
 
 type player struct {
-	name string
+	Name string
+	Frame []int
 }
 
 func bowl(set []int) {
 	var roll1, roll2, score int
 	frame := 1
-	fmt.Println("scores to process:", set)
+	fmt.Println("frames to process:", set)
 	for frame < 10 {
 		fmt.Printf("Frame: %d\n", frame)
 		roll1, roll2 = set[0], set[1]
@@ -66,18 +67,17 @@ func getNames(p int) string {
 	return a
 }
 
-func getFrames(name string) []int {
-	set := make([]int, 21)
-	var index int
+func getFrames(frame int, name string) []int {
+	pins := make([]int, 2)
 	// Frames 1-9:
-	for i := 0; i < 9; i++ {
-		for j := 1; j <= 2; j++ {
-			fmt.Printf("~~ Frame %d.%d ~~\n", i+1, j)
-			fmt.Printf("Please enter %s's score (0-10) for frame %d, ball %d [default 0]: ", name, i+1, j)
-			_, e := fmt.Scanln(&set[index])
+	if frame <= 9 {
+		for j := 0; j < 2; j++ {
+			fmt.Printf("~~ Frame %d.%d ~~\n", frame, j+1)
+			fmt.Printf("Please enter %s's score (0-10) for frame %d, ball %d [default 0]: ", name, frame, j+1)
+			_, e := fmt.Scanln(&pins[j])
 			switch {
 			case fmt.Sprint(e) == "unexpected newline":
-				index++
+				pins[j] = 0
 			case e != nil && fmt.Sprint(e) != "unexpected newline":
 				fmt.Println(e, "...backing up.")
 				if j == 1 {
@@ -86,63 +86,60 @@ func getFrames(name string) []int {
 					j = 1
 				}
 				continue
-			case j == 1 && set[index] > 10:
+			case j == 0 && pins[j] > 10:
 				fmt.Println("There are only 10 pins! Please enter a number from 0 through 10")
-				j = 0; set[index] = 0 // have to set[index] back to 0, otherwise set keeps wrong number.
+				j = 0
 				continue
-			case j == 2 && set[index] > 10-set[index-1]:
-				fmt.Printf("There are only %d pins left! Please enter a number from 0 through %d.\n", 10-set[index-1], 10-set[index-1])
-				j = 1; set[index] = 0
+			case j == 1 && pins[j] > 10-pins[0]:
+				fmt.Printf("There are only %d pins left! Please enter a number from 0 through %d.\n", 10-pins[0], 10-pins[0])
+				j = 0
 				continue
-			case set[index] == 10 && j == 1:
+			case pins[j] == 10 && j == 0:
 				j++
-				index += 2
 				break
 			default:
-				index++
+				continue
 			}
-			fmt.Println(set)
 		}
-	}
+		return pins
+	} else {
 	// Frame 10:
 	fmt.Println("Frame 10")
-	index = 18
-	for j := 1; j <= 3; j++ {
-		fmt.Printf("Please enter %s's score for frame 10, ball %d [default 0]: ", name, j)
-		if _, err := fmt.Scanln(&set[index]); err != nil && fmt.Sprint(err) != "unexpected newline" {
-			fmt.Println(err, "Something went wrong.")
-			j = 1
-			index = 18
-		} else if j == 2 && set[18] + set[19] < 10 {
-			j = 3
-			break
-		} else {
-			index++
+	pins = append(pins, 0)
+		for j := 0; j < 3; j++ {
+			fmt.Printf("Please enter %s's score for frame 10, ball %d [default 0]: ", name, j+1)
+			if _, err := fmt.Scanln(&pins[j]); err != nil && fmt.Sprint(err) != "unexpected newline" {
+				fmt.Println(err, "Something went wrong.")
+				j = 0
+			} else if j == 1 && pins[0] + pins[1] < 10 {
+				j = 3
+				break
+			} else {
+				continue
+			}
 		}
 	}
-	return set
+	return pins
 }
 
 
 func main() {
 	var a int
-	numplayers := getPlayers(&a)
-	x := make([]string, numplayers)
-	fmt.Printf("You entered %d players.\n", numplayers)
-	for i := 0; i < numplayers; i++ {
-		x[i] = fmt.Sprintf(getNames(i+1))
-		fmt.Printf("Player %d is %s.\n", i+1, x[i])
-		frames := getFrames(x[i])
-		fmt.Printf("%s's set: %v\n", x[i], frames)
-		fmt.Printf("%s's total:\n", x[i])
-		bowl(frames)
+	n := getPlayers(&a)
+	p := make([]player, n)
+	fmt.Printf("You entered %d players.\n", n)
+	for i := 0; i < n; i++ {
+		p[i].Name = getNames(i+1)
+		fmt.Printf("Player %d is %s.\n", i+1, p[i].Name)
 	}
-	//p1 := player{fmt.Sprint(x[0])}
-	//fmt.Println(p1.name)
-	//p1scores := []int{5, 3, 6, 4, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
-	//p2scores := []int{5, 3, 10, 5, 4, 7, 1, 5, 5, 9, 0, 3, 7, 10, 8, 0, 7, 2}
-	//p3scores := []int{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
-	//bowl(p1scores)
-	//bowl(p2scores)
-	//bowl(p3scores)
+	for f := 1; f <= 10; f++ {
+		for i := range p {
+			x := getFrames(f, p[i].Name)
+			p[i].Frame = append(p[i].Frame, x...)
+		}
+	}
+	for i := 0; i < n; i++ {
+		fmt.Printf("%s's full set: %v\n", p[i].Name, p[i].Frame)
+		bowl(p[i].Frame)
+	}
 }
