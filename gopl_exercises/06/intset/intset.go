@@ -57,10 +57,21 @@ func (s *IntSet) Remove(x int) {
 			s.Words = append(s.Words[:i], s.Words[i+1:]...)
 		}
 	}
-	fmt.Println("s.Words is", s.Words)
 }
 
 // Clear removes all elements from the set (exercise 6.1.3).
+func (s *IntSet) Clear() {
+	s.Words = []uint64{}
+}
+
+// Copy returns a copy of the set (exercise 6.1.4).
+func (s *IntSet) Copy() *IntSet {
+	var y IntSet
+	for i := range s.Words {
+		y.Words = append(y.Words, s.Words[i])
+	}
+	return &y
+}
 
 //!-intset
 
