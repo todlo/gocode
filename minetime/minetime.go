@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func timeSetter(s, file string, wake time.Time, w *writer) {
+func timeSetter(s, file string, wake time.Time, w bufio.ReadWriter) {
 	log.Printf("wakeup is %v (%v)", wake, wake.Unix())
 	log.Printf("Setting shutdown to %s.", s)
 	cmd := exec.Command("sudo", "shutdown", "-h", s)
@@ -25,7 +25,7 @@ func timeSetter(s, file string, wake time.Time, w *writer) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	writer.Flush()
+	w.Flush()
 
 	log.Printf("Wrote %v to %s.", wake.UTC().Unix(), file)
 }
