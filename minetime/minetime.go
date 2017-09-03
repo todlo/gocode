@@ -10,8 +10,28 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
+
+func holidayCheck(date time.Time) bool {
+	holidays := []string{
+		"2017-09-04",
+		"2017-11-11",
+		"2017-11-23",
+		"2017-12-25",
+		"2018-01-01",
+		"2018-02-19",
+	}
+	// (source: https://www.pge.com/tariffs/toudates.shtml)
+
+	for i := range holidays {
+		if strings.Contains(fmt.Sprint(date), holidays[i]) {
+			return true
+		}
+	}
+	return false
+}
 
 func timeSetter(s, file string, wake time.Time, w bufio.ReadWriter) {
 	log.Printf("wakeup is %v (%v)", wake, wake.Unix())
@@ -55,14 +75,17 @@ func main() {
 	now := time.Now()
 	tomorrow := now.Add(17 * time.Hour)
 
-	if fmt.Sprint(tomorrow.Weekday()) == "Saturday" || fmt.Sprint(tomorrow.Weekday()) == "Sunday" {
-		fmt.Printf("Tomorrow is %v, so weekday is %t.\n", tomorrow.Weekday(), weekday)
-	} else {
-		weekday = true
+	switch { // weekday/!weekday eval
+	case tomorrow.Weekday() == time.Saturday || tomorrow.Weekday() == time.Sunday:
 		log.Printf("Tomorrow is %v, so weekday is %t.\n", tomorrow.Weekday(), weekday)
+	case holidayCheck(tomorrow):
+		log.Printf("Tomorrow is a holiday (%v), so weekday is %t.", fmt.Sprint(tomorrow)[:10], weekday)
+	default:
+		log.Printf("Tomorrow is %v, so weekday is %t.\n", tomorrow.Weekday(), weekday)
+		weekday = true
 	}
 
-	if !weekday { // meaning, if weekend (TODO: or holiday).
+	if !weekday { // meaning, if weekend (TODO: send contents to timeSetter()).
 		wakeup = time.Date(tomorrow.Year(), tomorrow.Month(), tomorrow.Day(), 19, 00, 00, 00, time.Local)
 		log.Printf("wakeup is %v (%v)\n", wakeup, wakeup.Unix())
 		log.Print("Setting shutdown to 15:00.")
