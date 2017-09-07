@@ -73,7 +73,7 @@ func main() {
 	defer f.Close()
 
 	now := time.Now()
-	tomorrow := now.Add(17 * time.Hour)
+	tomorrow := now.Add(7 * time.Hour)
 
 	switch { // weekday/!weekday eval
 	case tomorrow.Weekday() == time.Saturday || tomorrow.Weekday() == time.Sunday:
@@ -81,8 +81,8 @@ func main() {
 	case holidayCheck(tomorrow):
 		log.Printf("Tomorrow is a holiday (%v), so weekday is %t.", fmt.Sprint(tomorrow)[:10], weekday)
 	default:
-		log.Printf("Tomorrow is %v, so weekday is %t.\n", tomorrow.Weekday(), weekday)
 		weekday = true
+		log.Printf("Tomorrow is %v, so weekday is %t.\n", tomorrow.Weekday(), weekday)
 	}
 
 	if !weekday { // meaning, if weekend (TODO: send contents to timeSetter()).
