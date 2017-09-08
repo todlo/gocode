@@ -33,7 +33,7 @@ func holidayCheck(date time.Time) bool {
 	return false
 }
 
-func timeSetter(s, file string, wake time.Time, w bufio.ReadWriter) {
+func timeSetter(s, file string, wake time.Time, w *bufio.Writer) {
 	log.Printf("wakeup is %v (%v)", wake, wake.Unix())
 	log.Printf("Setting shutdown to %s.", s)
 	cmd := exec.Command("sudo", "shutdown", "-h", s)
@@ -85,39 +85,12 @@ func main() {
 		log.Printf("Tomorrow is %v, so weekday is %t.\n", tomorrow.Weekday(), weekday)
 	}
 
-	if !weekday { // meaning, if weekend (TODO: send contents to timeSetter()).
+	if !weekday { // meaning, if weekend or holiday (TODO: send contents to timeSetter()).
 		wakeup = time.Date(tomorrow.Year(), tomorrow.Month(), tomorrow.Day(), 19, 00, 00, 00, time.Local)
-		log.Printf("wakeup is %v (%v)\n", wakeup, wakeup.Unix())
-		log.Print("Setting shutdown to 15:00.")
-		cmd := exec.Command("sudo", "shutdown", "-h", "15:00")
-		if err := cmd.Run(); err != nil {
-			log.Printf("Command finished with error: %v", err)
-		}
-
-		_, err := writer.WriteString(fmt.Sprint(wakeup.UTC().Unix()))
-		if err != nil {
-			log.Fatal(err)
-		}
-		writer.Flush()
-
-		log.Printf("Wrote %v to %s.", wakeup.UTC().Unix(), file)
-
+		timeSetter("15:00", file, wakeup, writer)
 	} else {
 		wakeup = time.Date(tomorrow.Year(), tomorrow.Month(), tomorrow.Day(), 21, 00, 00, 00, time.Local)
-		log.Printf("wakeup is %v (%v)\n", wakeup, wakeup.Unix())
-		log.Print("Setting shutdown to 14:00.")
-		cmd := exec.Command("sudo", "shutdown", "-h", "14:00")
-		if err := cmd.Run(); err != nil {
-			log.Printf("Command finished with error: %v", err)
-		}
-
-		_, err := writer.WriteString(fmt.Sprint(wakeup.UTC().Unix()))
-		if err != nil {
-			log.Fatal(err)
-		}
-		writer.Flush()
-
-		log.Printf("Wrote %v to %s.", wakeup.UTC().Unix(), file)
+		timeSetter("14:00", file, wakeup, writer)
 	}
 
 	byteSlice := make([]byte, 16)
