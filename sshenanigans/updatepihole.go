@@ -16,11 +16,11 @@ import (
 )
 
 var (
-	target  = flag.String("target", "pi4hole", "Hostname or address of the pihole you want to update.")
-	port    = flag.String("port", "33422", "The SSH port number on the target for this ssh session.")
+	target  = flag.String("target", "", "Hostname or address of the pihole you want to update.")
+	port    = flag.String("port", "22", "The SSH port number on the target for this ssh session.")
 	sshdir  = flag.String("sshdir", "", "Location of ssh keys for pubkey authentication.")
 	keyfile = flag.String("keyfile", "", "File name of private ssh key.")
-	user    = flag.String("user", "pi", "The username that we're trying to log in as.")
+	user    = flag.String("user", "", "The username that we're trying to log in as.")
 	yubikey = flag.Bool("yubikey", true, "If false, use 6-digit authenticator code as 2fa.")
 )
 
