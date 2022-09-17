@@ -16,12 +16,13 @@ import (
 )
 
 var (
-	target  = flag.String("target", "", "Hostname or address of the pihole you want to update.")
-	port    = flag.String("port", "22", "The SSH port number on the target for this ssh session.")
-	sshdir  = flag.String("sshdir", "", "Location of ssh keys for pubkey authentication.")
-	keyfile = flag.String("keyfile", "", "File name of private ssh key.")
-	user    = flag.String("user", "", "The username that we're trying to log in as.")
-	yubikey = flag.Bool("yubikey", true, "If false, use 6-digit authenticator code as 2fa.")
+	target           = flag.String("target", "", "Hostname or address of the pihole you want to update.")
+	port             = flag.String("port", "22", "The SSH port number on the target for this ssh session.")
+	sshdir           = flag.String("sshdir", "", "Location of ssh keys for pubkey authentication.")
+	keyfile          = flag.String("keyfile", "", "File name of private ssh key.")
+	user             = flag.String("user", "", "The username that we're trying to log in as.")
+	yubikey          = flag.Bool("yubikey", true, "If false, use 6-digit authenticator code as 2fa.")
+	ignoreKnownHosts = flag.Bool("ignore-known-hosts", false, "[INSECURE] Ignore parsing of known hosts file.")
 )
 
 type sshcon struct {
@@ -131,7 +132,7 @@ func (s *sshcon) connect(host, port, sshdir string) error {
 		answers = append(answers, string(num))
 		return answers, nil
 	}
-	hostKeyCb, err := knownhosts.New(sshdir + "/known_hosts")
+	hostKeyCb, err := hccb(sshdir, *ignoreKnownHosts)
 	if err != nil {
 		return err
 	}
@@ -151,6 +152,13 @@ func (s *sshcon) connect(host, port, sshdir string) error {
 	}
 
 	return err
+}
+
+func hccb(sshdir string, ignore bool) (ssh.HostKeyCallback, error) {
+	if ignore {
+		return ssh.InsecureIgnoreHostKey(), nil
+	}
+	return knownhosts.New(sshdir + "/known_hosts")
 }
 
 func getcreds(instruction string) ([]byte, error) {
